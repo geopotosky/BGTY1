@@ -18,6 +18,7 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var eventDate: UILabel!
     @IBOutlet weak var textFieldEvent: UILabel!
+    //@IBOutlet weak var textFieldEvent: UITextField!
     @IBOutlet weak var deleteEventButton: UIBarButtonItem!
     @IBOutlet weak var editEventButton: UIBarButtonItem!
     @IBOutlet weak var countDownLabel: UILabel!
@@ -25,6 +26,7 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
     @IBOutlet weak var untilEventSelector: UISegmentedControl!
     @IBOutlet weak var mgFactorButon: UIButton!
     @IBOutlet weak var mgFactorLabel: UILabel!
+    
     @IBOutlet weak var shareEventButton: UIToolbar!
     @IBOutlet weak var eventCalendarButton: UIButton!
     @IBOutlet weak var toolbarObject: UIToolbar!
@@ -37,6 +39,8 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
     @IBOutlet weak var daysTickerLabel: UILabel!
     @IBOutlet weak var daysWordLabel: UILabel!
     @IBOutlet weak var untilEventText2: UITextField!
+    @IBOutlet weak var untilEventText3: UITextField!
+    @IBOutlet weak var magicButton: UIButton!
 
     //-Global objects, properties & variables
     var events: [Events]!
@@ -52,7 +56,6 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
     var count: Int!
     var pickEventDate: NSDate!
     var tempEventDate: NSDate!
-    
     var durationSeconds: Int!
     var durationMinutes: Int!
     var durationHours: Int!
@@ -64,29 +67,43 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
     var alertMessage: String!
     var alertTitle: String!
     
-    //-Event Font Attributes
+    //-Event Text Font Attributes
     let eventTextAttributes = [
-        NSStrokeColorAttributeName : UIColor.whiteColor(),
-        NSForegroundColorAttributeName : UIColor.blackColor(),
-        NSFontAttributeName : UIFont(name: "HelveticaNeue-Bold", size: 26)!,
-        NSStrokeWidthAttributeName : -4.0
+        NSStrokeColorAttributeName : UIColor.blackColor(),
+        NSForegroundColorAttributeName : UIColor.whiteColor(),
+        NSFontAttributeName : UIFont(name: "HelveticaNeue-Bold", size: 30)!,
+        NSStrokeWidthAttributeName : -2.0
     ]
-
+    let untilTextAttributes = [
+        NSStrokeColorAttributeName : UIColor.blackColor(),
+        NSForegroundColorAttributeName : UIColor.whiteColor(),
+        NSFontAttributeName : UIFont(name: "HelveticaNeue-Bold", size: 20)!,
+        NSStrokeWidthAttributeName : -2.0
+    ]
     
     //-Perform when view did load
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //-Change toolbar color
-        self.toolbarObject?.backgroundColor = UIColor.greenColor()
+        
+        //-Manage Top and Bottom bar colors
+        //-Green Bars
+        
+        self.navigationController!.navigationBar.barTintColor = UIColor(red:0.6,green:1.0,blue:0.6,alpha:1.0)
+        self.navigationController!.navigationBar.translucent = false
+        
         //-Hide the Tab Bar
         self.tabBarController?.tabBar.hidden = true
+        
         //-Hide the "Event Ended" message
         countDownLabel.hidden = true
         
         //-Add font attributes
         self.untilEventText2.defaultTextAttributes = eventTextAttributes
         self.untilEventText2.textAlignment = NSTextAlignment.Center
+        self.untilEventText3.defaultTextAttributes = untilTextAttributes
+        self.untilEventText3.textAlignment = NSTextAlignment.Center
 
         do {
             try fetchedResultsController.performFetch()
@@ -163,6 +180,7 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
             var a = CGFloat(0)
             
             color.getRed(&r, green: &g, blue: &b, alpha: &a)
+            print(color.getRed(&r, green: &g, blue: &b, alpha: &a))
             
             // Counting the perceptive luminance - human eye favors green color...
             let luminance = 1 - ((0.299 * r) + (0.587 * g) + (0.114 * b)) / 255
@@ -175,7 +193,7 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
                 d = CGFloat(255) // dark colors - white font
             }
             
-            self.eventDate.textColor = UIColor( red: d, green: d, blue: d, alpha: a)
+            //self.eventDate.textColor = UIColor( red: d, green: d, blue: d, alpha: a)
             //self.eventDate.textColor = UIColor.yellowColor()
             
             return UIColor( red: d, green: d, blue: d, alpha: a)
@@ -183,9 +201,11 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
 
         }
 
-        //contrastColor(UIColor.redColor())
-        contrastColor(UIColor(red:0.6,green:1.0,blue:0.6,alpha:1.0))
-
+        //contrastColor(UIColor.lightGrayColor())
+        contrastColor(UIColor(red:0.01,green:0.01,blue:0.01,alpha:1.0))
+        
+        
+        
         
         //let localDate = dateFormatter.stringFromDate(date!)
         //self.eventDate.text = "Event Date: " + localDate
@@ -194,7 +214,50 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
         self.imageView!.image = finalImage
         
         
-        self.textFieldEvent.text = "until " + event.textEvent!
+//        func getRGBAsFromImage(image: UIImage, atX x: Int, andY y: Int, count: Int) -> [AnyObject] {
+//            var result: [AnyObject] = [AnyObject](arrayLiteral: count)
+//            // First get the image into your data buffer
+//            var imageRef: CGImageRef = self.imageView!.image!.CGImage!
+//            var width: Int = CGImageGetWidth(imageRef)
+//            var height: Int = CGImageGetHeight(imageRef)
+//            var colorSpace: CGColorSpaceRef = CGColorSpaceCreateDeviceRGB()!
+//            var rawData: UInt8 = UInt8(calloc(height * width * 4, sizeof()))
+//            var bytesPerPixel: Int = 4
+//            var bytesPerRow: Int = bytesPerPixel * width
+//            var bitsPerComponent: Int = 8
+//            var context: CGContextRef = CGBitmapContextCreate(rawData, width, height, bitsPerComponent, bytesPerRow, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big)
+//            CGColorSpaceRelease(colorSpace)
+//            CGContextDrawImage(context, CGRectMake(0, 0, width, height), imageRef)
+//            CGContextRelease(context)
+//            
+//            
+//        
+//        
+//        func averageColor() -> UIColor {
+//            var colorSpace: CGColorSpaceRef = CGColorSpaceCreateDeviceRGB()!
+//            var rgba: [UInt16]
+//            var context2: CGContextRef = CGBitmapContextCreate(rgba, 1, 1, 8, 4, colorSpace, 5)
+//            var context3: CGContextRef = CGBitmapContextCreate(UnsafeMutablePointer<Void>, <#T##Int#>, <#T##Int#>, <#T##Int#>, <#T##Int#>, CGColorSpace?, <#T##UInt32#>)
+//            var context: CGContextRef = CGBitmapContextCreate(rgba, 1, 1, 8, 4, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big)
+//            CGContextDrawImage(context, CGRectMake(0, 0, 1, 1), self.imageView!.image)
+//            //CGColorSpaceRelease(colorSpace)
+//            //CGContextRelease(context)
+//            if rgba[3] > 0 {
+//                
+//            }
+//            do {
+//                var alpha: CGFloat = (rgba[3] as! CGFloat) / 255.0
+//                var multiplier: CGFloat = alpha / 255.0
+//                return UIColor(red: (rgba[0] as! CGFloat) * multiplier, green: (rgba[1] as! CGFloat) * multiplier, blue: (rgba[2] as! CGFloat) * multiplier, alpha: alpha)
+//            }
+//            do {
+//                return UIColor(red: (rgba[0] as! CGFloat) / 255.0, green: (rgba[1] as! CGFloat) / 255.0, blue: (rgba[2] as! CGFloat) / 255.0, alpha: (rgba[3] as! CGFloat) / 255.0)
+//            }
+//        }
+        
+        
+        //self.textFieldEvent.text = "until " + event.textEvent!
+        self.untilEventText3.text = "until " + event.textEvent!
         //self.eventDate.textColor = UIColor( red: self.d, green: d, blue: d, alpha: a)
 
         //-Call the main "until" setup routine
@@ -240,7 +303,7 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
         case 1:
             let tempText1 = numberFormatter.stringFromNumber(self.durationDays)!
             
-            if self.durationDays < 2 {
+            if self.durationDays == 1 {
                 untilEventText2.text = ("Only \(tempText1) + Day")
             }
             else {
@@ -446,13 +509,13 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
         durationWeeks = (((durationSeconds / 60) / 60) / 24) / 7
         
         //-Disable Magic Wand button is days < 2
-        if durationDays < 2 {
-            mgFactorLabel.enabled = false
-            mgFactorButon.enabled = false
-        } else {
-            mgFactorLabel.enabled = true
-            mgFactorButon.enabled = true
-        }
+//        if durationDays < 2 {
+//            mgFactorLabel.enabled = false
+//            mgFactorButon.enabled = false
+//        } else {
+//            mgFactorLabel.enabled = true
+//            mgFactorButon.enabled = true
+//        }
         
         //-Disable Segment button if value = 0
         if durationWeeks == 0 {
@@ -487,10 +550,11 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
     //-and 1 day from the back. After all, does anybody really count those days when your planning? :-)
     @IBAction func mgFactor(sender: UIButton) {
         
-        //-Set the MG Factor (172800 = 2 days in seconds) and update the button label
+        //-Set the Magic Factor (172800 = 2 days in seconds) and update the button label
         if mgFactorValue == 0 {
             mgFactorValue = 172800
             mgFactorLabel.text = "ON"
+            
         }
         else {
             mgFactorValue = 0

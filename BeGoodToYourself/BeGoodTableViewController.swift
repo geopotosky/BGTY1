@@ -35,9 +35,13 @@ class BeGoodTableViewController: UIViewController, UITableViewDataSource, NSFetc
         
         //-Manage Top and Bottom bar colors
         //-Green Bars
-        self.navigationController!.navigationBar.barTintColor = UIColor(red:0.66,green:0.97,blue:0.59,alpha:1.0)
-        self.tabBarController?.tabBar.barTintColor = UIColor(red:0.66,green:0.97,blue:0.59,alpha:1.0)
+        self.navigationController!.navigationBar.barTintColor = UIColor(red:0.6,green:1.0,blue:0.6,alpha:1.0)
+        self.navigationController!.navigationBar.translucent = false
+        self.tabBarController?.tabBar.barTintColor = UIColor(red:0.6,green:1.0,blue:0.6,alpha:1.0)
+        self.tabBarController?.tabBar.translucent = false
         
+        //self.navigationController!.navigationBar.barTintColor = UIColor.greenColor()
+        //self.tabBarController?.tabBar.barTintColor = UIColor.greenColor()
         
         //-Add notification observer
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BeGoodTableViewController.refreshList), name: "TodoListShouldRefresh", object: nil)
@@ -352,7 +356,7 @@ class BeGoodTableViewController: UIViewController, UITableViewDataSource, NSFetc
         }
         //-After 3 second delay, close the Alert automatically
         let delayTime = dispatch_time(DISPATCH_TIME_NOW,
-            Int64(3 * Double(NSEC_PER_SEC)))
+            Int64(2 * Double(NSEC_PER_SEC)))
         dispatch_after(delayTime, dispatch_get_main_queue()) {
             self.presentedViewController!.dismissViewControllerAnimated(true, completion: nil);
         }
