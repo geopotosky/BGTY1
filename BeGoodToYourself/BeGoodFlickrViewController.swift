@@ -27,6 +27,7 @@ class BeGoodFlickrViewController: UIViewController {
     var eventImage2: NSData!
     var currentImage: UIImage!
     var tapRecognizer: UITapGestureRecognizer? = nil
+
     
     //-Set the textfield delegates
     let flickrTextDelegate = FlickrTextDelegate()
@@ -54,6 +55,7 @@ class BeGoodFlickrViewController: UIViewController {
         pickImageButton.hidden = true
         flickrActivityIndicator.hidden = true
         flickrActivityFrame.hidden = true
+
         
         //-Textfield delegate values
         self.phraseTextField.delegate = flickrTextDelegate
@@ -68,6 +70,7 @@ class BeGoodFlickrViewController: UIViewController {
         //-Add tap recognizer to dismiss keyboard
         self.addKeyboardDismissRecognizer()
         
+        //-Display the current or default event image
         if editEventFlag2 == false {
             self.photoImageView.image = UIImage(named: "BG_Placeholder_Image.png")
         } else {
@@ -95,6 +98,9 @@ class BeGoodFlickrViewController: UIViewController {
         self.flickrActivityIndicator.hidden = false
         self.flickrActivityFrame.hidden = false
         self.flickrActivityIndicator.startAnimating()
+        self.flickrActivityFrame.layer.cornerRadius = 45
+        self.flickrActivityFrame.backgroundColor = UIColor.whiteColor()
+        
         
         //-Set the Flickr Text Phrase for API search
         appDelegate.phraseText = self.phraseTextField.text
@@ -134,7 +140,7 @@ class BeGoodFlickrViewController: UIViewController {
                     
                 } else {
                     //-Call Alert message
-                    self.alertMessage = "Flickr Error Message! \(errorString)"
+                    self.alertMessage = "\(errorString!)"
                     self.errorAlertMessage()
                 } //-End success
             
@@ -200,11 +206,15 @@ class BeGoodFlickrViewController: UIViewController {
         dispatch_async(dispatch_get_main_queue()) {
             let actionSheetController: UIAlertController = UIAlertController(title: "Alert!", message: "\(self.alertMessage)", preferredStyle: .Alert)
             
+            self.flickrActivityIndicator.hidden = true
+            self.flickrActivityIndicator.stopAnimating()
+            self.flickrActivityFrame.hidden = true
+            
             //-Update alert colors and attributes
             actionSheetController.view.tintColor = UIColor.blueColor()
             let subview = actionSheetController.view.subviews.first! 
             let alertContentView = subview.subviews.first! 
-            alertContentView.backgroundColor = UIColor(red:0.66,green:0.97,blue:0.59,alpha:1.0)
+            alertContentView.backgroundColor = UIColor(red:0.6,green:1.0,blue:0.6,alpha:1.0)
             alertContentView.layer.cornerRadius = 5;
             
             //-Create and add the OK action

@@ -141,29 +141,43 @@ class BGClient : NSObject {
                         totalPhotosVal = (totalPhotos as NSString).integerValue
                     }
                     
+                    print(totalPhotosVal)
+                    
                     //-If photos are returned, let's grab one!
                     if totalPhotosVal > 0 {
                         if let photosArray = photosDictionary["photo"] as? [[String: AnyObject]] {
                             
                             let randomPhotoIndex = Int(arc4random_uniform(UInt32(photosArray.count)))
-                            let photoDictionary = photosArray[randomPhotoIndex] as [String:AnyObject]
-                                        
-                            //-Get the image url
-                            let imageUrlString = photoDictionary["url_m"] as? String
-                            let imageURL = NSURL(string: imageUrlString!)
-                            let urlRequest = NSURLRequest(URL: imageURL!)
-                            let mainQueue = NSOperationQueue()
                             
-                            NSURLConnection.sendAsynchronousRequest(urlRequest, queue: mainQueue, completionHandler:{(response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
-                                if data!.length > 0 && error == nil {
+                            print(randomPhotoIndex)
+                            print("")
+                            
+                            //-Watch for an empty random photo index
+                            if randomPhotoIndex == 0 {
+                                completionHandler(success: false, pictureURL: nil, errorString: "No Image Found. Try Again.")
+                            }
+                            else {
+                            
+                                let photoDictionary = photosArray[randomPhotoIndex] as [String:AnyObject]
+                            
+                                //-Get the image url
+                                let imageUrlString = photoDictionary["url_m"] as? String
+                                let imageURL = NSURL(string: imageUrlString!)
+                                let urlRequest = NSURLRequest(URL: imageURL!)
+                                let mainQueue = NSOperationQueue()
+                            
+                                NSURLConnection.sendAsynchronousRequest(urlRequest, queue: mainQueue, completionHandler:{(response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+                                    if data!.length > 0 && error == nil {
 
-                                    completionHandler(success: true, pictureURL: imageUrlString, errorString: nil)
-                                }
-                                else {
-                                    completionHandler(success: false, pictureURL: nil, errorString: "Nothing was downloaded")
-                                }
-                            }) //-End NSURLConnection routine
+                                        completionHandler(success: true, pictureURL: imageUrlString, errorString: nil)
+                                    }
+                                    else {
+                                        completionHandler(success: false, pictureURL: nil, errorString: "No Image Found. Try Again.")
+                                    }
+                                }) //-End NSURLConnection routine
 
+                            } //-End Fix flickr Index Out of Range Error
+                            
                         } else {
                             completionHandler(success: false, pictureURL: nil, errorString: "Cant find key 'photo' in \(photosDictionary)")
                         }

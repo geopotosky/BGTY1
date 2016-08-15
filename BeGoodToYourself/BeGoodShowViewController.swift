@@ -63,6 +63,7 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
     var durationWeeks: Int!
     var durationMonths: Int!
     
+    
     //-Alert variable
     var alertMessage: String!
     var alertTitle: String!
@@ -99,12 +100,29 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
         //-Hide the "Event Ended" message
         countDownLabel.hidden = true
         
+        
         //-Add font attributes
-        self.untilEventText2.defaultTextAttributes = eventTextAttributes
+        
+        //self.untilEventText2.defaultTextAttributes = eventTextAtt
+        //self.untilEventText3.defaultTextAttributes = untilTextAttributes
+        
+        //-Main UNTIL Text blur effects
         self.untilEventText2.textAlignment = NSTextAlignment.Center
-        self.untilEventText3.defaultTextAttributes = untilTextAttributes
-        self.untilEventText3.textAlignment = NSTextAlignment.Center
+        self.untilEventText2.layer.shadowColor = UIColor.blackColor().CGColor
+        self.untilEventText2.layer.shadowOffset = CGSizeMake(0.0, 0.0)
+        self.untilEventText2.layer.shadowRadius = 7.0
+        self.untilEventText2.layer.shadowOpacity = 0.5
+        self.untilEventText2.layer.masksToBounds = false
 
+        //-UNTIL Description blur effects
+        self.untilEventText3.textAlignment = NSTextAlignment.Center
+        self.untilEventText3.layer.shadowColor = UIColor.blackColor().CGColor
+        self.untilEventText3.layer.shadowOffset = CGSizeMake(0.0, 0.0)
+        self.untilEventText3.layer.shadowRadius = 7.0
+        self.untilEventText3.layer.shadowOpacity = 0.5
+        self.untilEventText3.layer.masksToBounds = false
+
+        
         do {
             try fetchedResultsController.performFetch()
         } catch _ {
@@ -213,52 +231,7 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
         let finalImage = UIImage(data: event.eventImage!)
         self.imageView!.image = finalImage
         
-        
-//        func getRGBAsFromImage(image: UIImage, atX x: Int, andY y: Int, count: Int) -> [AnyObject] {
-//            var result: [AnyObject] = [AnyObject](arrayLiteral: count)
-//            // First get the image into your data buffer
-//            var imageRef: CGImageRef = self.imageView!.image!.CGImage!
-//            var width: Int = CGImageGetWidth(imageRef)
-//            var height: Int = CGImageGetHeight(imageRef)
-//            var colorSpace: CGColorSpaceRef = CGColorSpaceCreateDeviceRGB()!
-//            var rawData: UInt8 = UInt8(calloc(height * width * 4, sizeof()))
-//            var bytesPerPixel: Int = 4
-//            var bytesPerRow: Int = bytesPerPixel * width
-//            var bitsPerComponent: Int = 8
-//            var context: CGContextRef = CGBitmapContextCreate(rawData, width, height, bitsPerComponent, bytesPerRow, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big)
-//            CGColorSpaceRelease(colorSpace)
-//            CGContextDrawImage(context, CGRectMake(0, 0, width, height), imageRef)
-//            CGContextRelease(context)
-//            
-//            
-//        
-//        
-//        func averageColor() -> UIColor {
-//            var colorSpace: CGColorSpaceRef = CGColorSpaceCreateDeviceRGB()!
-//            var rgba: [UInt16]
-//            var context2: CGContextRef = CGBitmapContextCreate(rgba, 1, 1, 8, 4, colorSpace, 5)
-//            var context3: CGContextRef = CGBitmapContextCreate(UnsafeMutablePointer<Void>, <#T##Int#>, <#T##Int#>, <#T##Int#>, <#T##Int#>, CGColorSpace?, <#T##UInt32#>)
-//            var context: CGContextRef = CGBitmapContextCreate(rgba, 1, 1, 8, 4, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big)
-//            CGContextDrawImage(context, CGRectMake(0, 0, 1, 1), self.imageView!.image)
-//            //CGColorSpaceRelease(colorSpace)
-//            //CGContextRelease(context)
-//            if rgba[3] > 0 {
-//                
-//            }
-//            do {
-//                var alpha: CGFloat = (rgba[3] as! CGFloat) / 255.0
-//                var multiplier: CGFloat = alpha / 255.0
-//                return UIColor(red: (rgba[0] as! CGFloat) * multiplier, green: (rgba[1] as! CGFloat) * multiplier, blue: (rgba[2] as! CGFloat) * multiplier, alpha: alpha)
-//            }
-//            do {
-//                return UIColor(red: (rgba[0] as! CGFloat) / 255.0, green: (rgba[1] as! CGFloat) / 255.0, blue: (rgba[2] as! CGFloat) / 255.0, alpha: (rgba[3] as! CGFloat) / 255.0)
-//            }
-//        }
-        
-        
-        //self.textFieldEvent.text = "until " + event.textEvent!
         self.untilEventText3.text = "until " + event.textEvent!
-        //self.eventDate.textColor = UIColor( red: self.d, green: d, blue: d, alpha: a)
 
         //-Call the main "until" setup routine
         untilCounterStart()
@@ -295,26 +268,34 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
         let numberFormatter = NSNumberFormatter()
         numberFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
         
+        //-Segment Control style changes
+        sender.layer.cornerRadius = 7.0
+        sender.layer.borderColor = UIColor.blueColor().CGColor
+        sender.layer.borderWidth = 1.0
+        sender.layer.masksToBounds = true
+        sender.clipsToBounds = true
+        
+        
         switch untilEventSelector.selectedSegmentIndex {
 
         case 0:
             let tempText1 = numberFormatter.stringFromNumber(self.durationWeeks)!
-            untilEventText2.text = ("Only \(tempText1) + Weeks")
+            untilEventText2.text = ("Only \(tempText1) Weeks")
         case 1:
             let tempText1 = numberFormatter.stringFromNumber(self.durationDays)!
             
             if self.durationDays == 1 {
-                untilEventText2.text = ("Only \(tempText1) + Day")
+                untilEventText2.text = ("Only \(tempText1) Day")
             }
             else {
-                untilEventText2.text = ("Only \(tempText1) + Days")
+                untilEventText2.text = ("Only \(tempText1) Days")
             }
         case 2:
             let tempText1 = numberFormatter.stringFromNumber(self.durationHours)!
-            untilEventText2.text = ("Only \(tempText1) + Hours")
+            untilEventText2.text = ("Only \(tempText1) Hours")
         case 3:
             let tempText1 = numberFormatter.stringFromNumber(self.durationMinutes)!
-            untilEventText2.text = ("Only \(tempText1) + Minutes")
+            untilEventText2.text = ("Only \(tempText1) Minutes")
         case 4:
             let tempText1 = numberFormatter.stringFromNumber(self.durationSeconds)!
             untilEventText2.text = ("Only \(tempText1) Seconds")
@@ -450,30 +431,30 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
         case 0:
             let tempText1 = numberFormatter.stringFromNumber(self.durationWeeks)!
             if self.durationWeeks < 2 {
-                untilEventText2.text = ("Only \(tempText1) + Week")
+                untilEventText2.text = ("Only \(tempText1) Week")
             } else {
-                untilEventText2.text = ("Only \(tempText1) + Weeks")
+                untilEventText2.text = ("Only \(tempText1) Weeks")
             }
         case 1:
             let tempText1 = numberFormatter.stringFromNumber(self.durationDays)!
-            if self.durationDays < 2 {
-                untilEventText2.text = ("Only \(tempText1) + Day")
+            if self.durationDays == 1 {
+                untilEventText2.text = ("Only \(tempText1) Day")
             } else {
-                untilEventText2.text = ("Only \(tempText1) + Days")
+                untilEventText2.text = ("Only \(tempText1) Days")
             }
         case 2:
             let tempText1 = numberFormatter.stringFromNumber(self.durationHours)!
             if self.durationHours < 2 {
-                untilEventText2.text = ("Only \(tempText1) + Hour")
+                untilEventText2.text = ("Only \(tempText1) Hour")
             } else {
-                untilEventText2.text = ("Only \(tempText1) + Hours")
+                untilEventText2.text = ("Only \(tempText1) Hours")
             }
         case 3:
             let tempText1 = numberFormatter.stringFromNumber(self.durationMinutes)!
             if self.durationMinutes < 2 {
-                untilEventText2.text = ("Only \(tempText1) + Minute")
+                untilEventText2.text = ("Only \(tempText1) Minute")
             } else {
-                untilEventText2.text = ("Only \(tempText1) + Minutes")
+                untilEventText2.text = ("Only \(tempText1) Minutes")
             }
         case 4:
             let tempText1 = numberFormatter.stringFromNumber(self.durationSeconds)!
@@ -509,13 +490,13 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
         durationWeeks = (((durationSeconds / 60) / 60) / 24) / 7
         
         //-Disable Magic Wand button is days < 2
-//        if durationDays < 2 {
-//            mgFactorLabel.enabled = false
-//            mgFactorButon.enabled = false
-//        } else {
-//            mgFactorLabel.enabled = true
-//            mgFactorButon.enabled = true
-//        }
+        if durationDays < 2 {
+            magicButton.enabled = false
+            //mgFactorButon.enabled = false
+        } else {
+            magicButton.enabled = true
+            //mgFactorButon.enabled = true
+        }
         
         //-Disable Segment button if value = 0
         if durationWeeks == 0 {

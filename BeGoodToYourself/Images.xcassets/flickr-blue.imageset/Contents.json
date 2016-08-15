@@ -2,18 +2,18 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x",
-      "filename" : "flickr-blue-30.png"
+      "filename" : "flickr_30.png",
+      "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "scale" : "2x",
-      "filename" : "flickr-blue-60.png"
+      "filename" : "flickr_60.png",
+      "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "scale" : "3x",
-      "filename" : "flickr-blue-90.png"
+      "filename" : "flickr_90.png",
+      "scale" : "3x"
     }
   ],
   "info" : {
