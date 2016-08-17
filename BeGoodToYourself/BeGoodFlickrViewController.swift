@@ -8,15 +8,16 @@
 
 import UIKit
 
-class BeGoodFlickrViewController: UIViewController {
+class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
     
     //-View Outlets
     @IBOutlet weak var photoImageView: UIImageView!
-    @IBOutlet weak var phraseTextField: UITextField!
-    @IBOutlet weak var searchButton: UIButton!
+//    @IBOutlet weak var phraseTextField: UITextField!
+//    @IBOutlet weak var searchButton: UIButton!
     @IBOutlet weak var pickImageButton: UIButton!
     @IBOutlet weak var flickrActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var flickrActivityFrame: UIView!
+    @IBOutlet weak var searchBar: UISearchBar!
     
     //-Global objects, properties & variables
     var events: [Events]!
@@ -57,8 +58,10 @@ class BeGoodFlickrViewController: UIViewController {
         flickrActivityFrame.hidden = true
 
         
-        //-Textfield delegate values
-        self.phraseTextField.delegate = flickrTextDelegate
+        //-Delegates
+//        self.phraseTextField.delegate = flickrTextDelegate
+        
+        searchBar.delegate = self
         
     }
     
@@ -87,29 +90,42 @@ class BeGoodFlickrViewController: UIViewController {
         self.removeKeyboardDismissRecognizer()
 
     }
+
     
     
-    //-Call the Flicker Search API
-    @IBAction func searchFlicker(sender: UIButton) {
+    //-Call the Flicker Search API with Search Bar
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         
         searchFlag = true
         pickImageButton.hidden = true
         
-        self.flickrActivityIndicator.hidden = false
-        self.flickrActivityFrame.hidden = false
-        self.flickrActivityIndicator.startAnimating()
-        self.flickrActivityFrame.layer.cornerRadius = 45
+        self.flickrActivityFrame.layer.cornerRadius = 47
         self.flickrActivityFrame.backgroundColor = UIColor.whiteColor()
+        self.flickrActivityFrame.hidden = false
+        self.flickrActivityIndicator.hidden = false
+        self.flickrActivityIndicator.startAnimating()
         
         
         //-Set the Flickr Text Phrase for API search
-        appDelegate.phraseText = self.phraseTextField.text
+        //appDelegate.phraseText = self.phraseTextField.text
+        appDelegate.phraseText = self.searchBar.text
         
         //-Added from student request -- hides keyboard after searching
         self.dismissAnyVisibleKeyboards()
         
         //-Verify Phrase Textfield in NOT Empty
-        if !self.phraseTextField.text!.isEmpty {
+        
+        print(self.searchBar.text)
+        
+        if self.searchBar.text!.isEmpty {
+            
+            self.flickrActivityIndicator.hidden = true
+            self.flickrActivityIndicator.stopAnimating()
+            //-If Phrase is empty, display Empty message
+            self.alertMessage = "Search Phrase is Missing"
+            self.errorAlertMessage()
+            
+        } else {
             
             //-Call the Get Flickr Images function
             BGClient.sharedInstance().getFlickrData(self) { (success, pictureURL, errorString) in
@@ -143,18 +159,83 @@ class BeGoodFlickrViewController: UIViewController {
                     self.alertMessage = "\(errorString!)"
                     self.errorAlertMessage()
                 } //-End success
-            
+                
             } //-End VTClient method
-        
-        } else {
-            self.flickrActivityIndicator.hidden = true
-            self.flickrActivityIndicator.stopAnimating()
-            //-If Phrase is empty, display Empty message
-            self.alertMessage = "Search Phrase is Missing"
-            self.errorAlertMessage()
+            
         }
-
+        
+        //self.searchBar.resignFirstResponder() //hide keyboard
+        
     }
+    
+    
+    //-Call the Flicker Search API
+//    @IBAction func searchFlicker(sender: UIButton) {
+//        
+//        searchFlag = true
+//        pickImageButton.hidden = true
+//        
+//        self.flickrActivityFrame.layer.cornerRadius = 47
+//        self.flickrActivityFrame.backgroundColor = UIColor.whiteColor()
+//        self.flickrActivityFrame.hidden = false
+//        self.flickrActivityIndicator.hidden = false
+//        self.flickrActivityIndicator.startAnimating()
+//        
+//        
+//        //-Set the Flickr Text Phrase for API search
+//        //appDelegate.phraseText = self.phraseTextField.text
+//        appDelegate.phraseText = self.searchBar.text
+//        
+//        //-Added from student request -- hides keyboard after searching
+//        self.dismissAnyVisibleKeyboards()
+//        
+//        //-Verify Phrase Textfield in NOT Empty
+//        if !self.phraseTextField.text!.isEmpty {
+//        
+//            //-Call the Get Flickr Images function
+//            BGClient.sharedInstance().getFlickrData(self) { (success, pictureURL, errorString) in
+//                
+//                if success {
+//                    
+//                    self.flickrImageURL = pictureURL
+//                    let imageURL = NSURL(string: pictureURL!)
+//                    
+//                    //-If an image exists at the url, set the image and title
+//                    if let imageData = NSData(contentsOfURL: imageURL!) {
+//                        self.eventImage2 = imageData
+//                        
+//                        dispatch_async(dispatch_get_main_queue(), {
+//                            //self.defaultLabel.alpha = 0.0
+//                            self.photoImageView.image = UIImage(data: imageData)
+//                            self.pickImageButton.hidden = false
+//                            self.flickrActivityIndicator.hidden = true
+//                            self.flickrActivityFrame.hidden = true
+//                            self.flickrActivityIndicator.stopAnimating()
+//                        })
+//                        
+//                    } else {
+//                        dispatch_async(dispatch_get_main_queue(), {
+//                            self.photoImageView.image = UIImage(named: "BG_Placeholder_Image.png")
+//                        })
+//                    }
+//                    
+//                } else {
+//                    //-Call Alert message
+//                    self.alertMessage = "\(errorString!)"
+//                    self.errorAlertMessage()
+//                } //-End success
+//            
+//            } //-End VTClient method
+//        
+//        } else {
+//            self.flickrActivityIndicator.hidden = true
+//            self.flickrActivityIndicator.stopAnimating()
+//            //-If Phrase is empty, display Empty message
+//            self.alertMessage = "Search Phrase is Missing"
+//            self.errorAlertMessage()
+//        }
+//
+//    }
 
     //-Pick the selected image button
     @IBAction func pickFlickrImage(sender: UIButton) {
@@ -232,7 +313,7 @@ class BeGoodFlickrViewController: UIViewController {
 //-This extension was added as a fix based on student comments
 extension BeGoodFlickrViewController {
     func dismissAnyVisibleKeyboards() {
-        if phraseTextField.isFirstResponder() {
+        if searchBar.isFirstResponder() {
             self.view.endEditing(true)
         }
     }

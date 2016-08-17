@@ -81,8 +81,8 @@ class BGClient : NSObject {
         
         //-Create NSURLSessionDataTask and completion handler
         let task = session.dataTaskWithRequest(request) {data, response, downloadError in
-            if let error = downloadError {
-                completionHandler(success: false, pageNumber: 0, errorString: "Could not complete the request \(error)")
+            if downloadError != nil {
+                completionHandler(success: false, pageNumber: 0, errorString: "Could not complete the request. Try Again.")
             } else {
                 
                 let parsedResult = (try! NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments)) as! NSDictionary
@@ -99,10 +99,10 @@ class BGClient : NSObject {
                         completionHandler(success: true, pageNumber: randomPage, errorString: nil)
                         
                     } else {
-                        completionHandler(success: false, pageNumber: 0, errorString: "Cant find key 'pages' in \(photosDictionary)")
+                        completionHandler(success: false, pageNumber: 0, errorString: "No Image Found. Try Again.")
                     }
                 } else {
-                    completionHandler(success: false, pageNumber: 0, errorString: "Cant find key 'photos' in \(parsedResult)")
+                    completionHandler(success: false, pageNumber: 0, errorString: "No Image Found. Try Again.")
                 }
             }
         }
@@ -127,8 +127,8 @@ class BGClient : NSObject {
         
         //-Create NSURLSessionDataTask and completion handler
         let task = session.dataTaskWithRequest(request) {data, response, downloadError in
-            if let error = downloadError {
-                completionHandler(success: false, pictureURL: nil, errorString: "Could not complete the request \(error)")
+            if downloadError != nil {
+                completionHandler(success: false, pictureURL: nil, errorString: "Could not complete the request. Try Again")
             } else {
                 let parsedResult = (try! NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments)) as! NSDictionary
                 
@@ -179,13 +179,13 @@ class BGClient : NSObject {
                             } //-End Fix flickr Index Out of Range Error
                             
                         } else {
-                            completionHandler(success: false, pictureURL: nil, errorString: "Cant find key 'photo' in \(photosDictionary)")
+                            completionHandler(success: false, pictureURL: nil, errorString: "No Image Found. Try Again.")
                         }
                     } else {
-                        completionHandler(success: false, pictureURL: nil, errorString: "No photos found in \(photosDictionary)")
+                        completionHandler(success: false, pictureURL: nil, errorString: "No Image Found. Try Again.")
                     }
                 } else {
-                    completionHandler(success: false, pictureURL: nil, errorString: "Cant find key 'photos' in \(parsedResult)")
+                    completionHandler(success: false, pictureURL: nil, errorString: "No Image Found. Try Again.")
                 }
             }
         }
