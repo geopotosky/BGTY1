@@ -27,9 +27,9 @@ class BudgetTableViewController: UITableViewController, NSFetchedResultsControll
         
         //-Create Navbar Buttons
         self.navigationController!.navigationBar.barTintColor = UIColor(red:0.66,green:0.97,blue:0.59,alpha:1.0)
-        let newBackButton = UIBarButtonItem(title: "Event", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(BudgetTableViewController.cancelBudgetList))
+        let newBackButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(BudgetTableViewController.cancelBudgetList))
         self.navigationItem.leftBarButtonItem = newBackButton
-        
+
         let b1 = self.editButtonItem()
         let b2 = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: #selector(BudgetTableViewController.addBudgetList))
         self.navigationItem.rightBarButtonItems = [b2, b1]

@@ -12,6 +12,7 @@
 		E53286621BC6F3960081C7F7 /* CornerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53286611BC6F3960081C7F7 /* CornerButton.swift */; };
 		E535F5D81C0E8C7300D665F4 /* BGYT2.png in Resources */ = {isa = PBXBuildFile; fileRef = E535F5D71C0E8C7300D665F4 /* BGYT2.png */; };
 		E535F5DA1C1141CE00D665F4 /* ActivitySquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = E535F5D91C1141CE00D665F4 /* ActivitySquare.swift */; };
+		E55C28B31D88C7320046236C /* image-placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = E55C28B21D88C7320046236C /* image-placeholder.png */; };
 		E5748B5E1BE06394007A0971 /* FlickrTextDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5748B5D1BE06394007A0971 /* FlickrTextDelegate.swift */; };
 		E5748B601BE14CC5007A0971 /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5748B5F1BE14CC5007A0971 /* RoundButton.swift */; };
 		E5A515CC1BBDDCD600186690 /* TodoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A515CB1BBDDCD600186690 /* TodoList.swift */; };
@@ -60,6 +61,7 @@
 		E53286611BC6F3960081C7F7 /* CornerButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CornerButton.swift; sourceTree = "<group>"; };
 		E535F5D71C0E8C7300D665F4 /* BGYT2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BGYT2.png; sourceTree = "<group>"; };
 		E535F5D91C1141CE00D665F4 /* ActivitySquare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivitySquare.swift; sourceTree = "<group>"; };
+		E55C28B21D88C7320046236C /* image-placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "image-placeholder.png"; sourceTree = "<group>"; };
 		E5748B5D1BE06394007A0971 /* FlickrTextDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrTextDelegate.swift; sourceTree = "<group>"; };
 		E5748B5F1BE14CC5007A0971 /* RoundButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
 		E5A515CB1BBDDCD600186690 /* TodoList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoList.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				E5748B5F1BE14CC5007A0971 /* RoundButton.swift */,
 				E535F5D91C1141CE00D665F4 /* ActivitySquare.swift */,
 				E5B9AB311BE51D5E00F6B8CF /* BG_Placeholder_Image.png */,
+				E55C28B21D88C7320046236C /* image-placeholder.png */,
 				E535F5D71C0E8C7300D665F4 /* BGYT2.png */,
 			);
 			name = Custom;
@@ -325,6 +328,7 @@
 				E5D00EE11BADFF4300971CC6 /* Main.storyboard in Resources */,
 				E5D00EE61BADFF4300971CC6 /* LaunchScreen.xib in Resources */,
 				E535F5D81C0E8C7300D665F4 /* BGYT2.png in Resources */,
+				E55C28B31D88C7320046236C /* image-placeholder.png in Resources */,
 				E5B9AB321BE51D5E00F6B8CF /* BG_Placeholder_Image.png in Resources */,
 				E5D00EE31BADFF4300971CC6 /* Images.xcassets in Resources */,
 			);

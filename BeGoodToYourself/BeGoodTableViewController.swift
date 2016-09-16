@@ -160,6 +160,7 @@ class BeGoodTableViewController: UIViewController, UITableViewDataSource, NSFetc
         UIGraphicsBeginImageContextWithOptions(itemSize, false, CGFloat())
         let imageRect: CGRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height)
         cell.imageView!.image!.drawInRect(imageRect)
+        //cell.imageView!.contentMode = .ScaleAspectFill
         cell.imageView!.image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         

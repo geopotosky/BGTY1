@@ -579,6 +579,18 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
 
 extension BeGoodShowViewController {
     
+    func createSnapshotOfView() -> UIImage {
+        var rect: CGRect = view.bounds
+        rect.size.height = rect.size.height - 81.0
+        UIGraphicsBeginImageContextWithOptions(rect.size, true, 0.0)
+        let context: CGContextRef = UIGraphicsGetCurrentContext()!
+        view.layer.renderInContext(context)
+        let capturedScreen: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        let shareEventImage: UIImage = UIImage(CGImage: capturedScreen.CGImage!, scale: 1.0, orientation: .Left)
+        return shareEventImage
+    }
+    
     //-Generate the Event Image to share
     func generateEventImage() -> UIImage {
         

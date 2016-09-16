@@ -18,6 +18,7 @@ class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
     @IBOutlet weak var flickrActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var flickrActivityFrame: UIView!
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var tempImage: UIImageView!
     
     //-Global objects, properties & variables
     var events: [Events]!
@@ -75,8 +76,10 @@ class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
         
         //-Display the current or default event image
         if editEventFlag2 == false {
-            self.photoImageView.image = UIImage(named: "BG_Placeholder_Image.png")
+            //self.photoImageView.image = UIImage(named: "BG_Placeholder_Image.png")
+            self.tempImage.hidden = false
         } else {
+            self.tempImage.hidden = true
             self.photoImageView.image = currentImage
         }
     }
@@ -98,6 +101,7 @@ class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
         
         searchFlag = true
         pickImageButton.hidden = true
+        self.tempImage.hidden = true
         
         self.flickrActivityFrame.layer.cornerRadius = 47
         self.flickrActivityFrame.backgroundColor = UIColor.whiteColor()
