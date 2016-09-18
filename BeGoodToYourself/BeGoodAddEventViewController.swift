@@ -2,8 +2,7 @@
 //  BeGoodAddEventViewController.swift
 //  BeGoodToYourself
 //
-//  Created by George Potosky on 9/19/15 (alpa).
-//  Updated by George Potosky on 9/16/16 (beta).
+//  Created by George Potosky on October 2016.
 //  Copyright (c) 2016 GeoWorld. All rights reserved.
 //
 
@@ -76,7 +75,7 @@ class BeGoodAddEventViewController: UIViewController, UIImagePickerControllerDel
         
         //-Hide the Tab Bar
         self.tabBarController?.tabBar.hidden = true
-
+        
         
         //-ScrollView Min and Max settings
         self.scrollView.minimumZoomScale = 1.0
@@ -101,7 +100,7 @@ class BeGoodAddEventViewController: UIViewController, UIImagePickerControllerDel
         tapRecognizer?.numberOfTapsRequired = 1
         
         
-        //-Date Picker Formatting -----------------------------------------------------
+        //-Date Picker Formatting ----------------------------------------------------
         
         let dateFormatter = NSDateFormatter()
         
@@ -133,9 +132,9 @@ class BeGoodAddEventViewController: UIViewController, UIImagePickerControllerDel
         //-Set the view controller as the delegate
         fetchedResultsController.delegate = self
         
+        //-Set Values Based on New or Existing Event
         if editEventFlag == false {
             //-Load default values for new event
-            //imageViewPicker.image = UIImage(named: "BG_Placeholder_Image.png")
             self.tempImage.hidden = false
             currentEventDate = NSDate()
             
@@ -262,7 +261,6 @@ class BeGoodAddEventViewController: UIViewController, UIImagePickerControllerDel
             
             if let eventImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
                 self.imageViewPicker.image = eventImage
-                //self.toolbarObject.hidden = true
                 self.adjustImageLabel.hidden = false
                 self.tempImage.hidden = true
                 
@@ -293,6 +291,7 @@ class BeGoodAddEventViewController: UIViewController, UIImagePickerControllerDel
         imagePicker.delegate = self
         imagePicker.sourceType = UIImagePickerControllerSourceType.Camera
         imageFlag = 2
+        self.tempImage.hidden = true
         self.presentViewController(imagePicker, animated: true, completion: nil)
     }
     
@@ -304,6 +303,7 @@ class BeGoodAddEventViewController: UIViewController, UIImagePickerControllerDel
         controller.editEventFlag2 = editEventFlag
         controller.eventIndexPath2 = self.eventIndexPath2
         controller.currentImage = imageViewPicker.image
+        self.tempImage.hidden = true
         self.navigationController!.pushViewController(controller, animated: true)
     }
     
@@ -324,34 +324,6 @@ class BeGoodAddEventViewController: UIViewController, UIImagePickerControllerDel
         //-End editing here
         self.view.endEditing(true)
     }
-    
-    
-    //-Create the adjusted Event Image
-//    func generateEventImage() -> UIImage {
-//        
-//        //-Hide toolbar
-//        toolbarObject.hidden = true
-//        self.navigationController!.navigationBar.hidden = true
-//        datePickerLable.hidden = true
-//        datePickerButton.hidden = true
-//        textFieldEvent.hidden = true
-//        self.adjustImageLabel.hidden = true
-//        
-//        //-Render view to an image
-//        UIGraphicsBeginImageContextWithOptions(self.view.frame.size, false, 0.0)
-//        self.view.drawViewHierarchyInRect(self.view.frame, afterScreenUpdates: true)
-//        let changedEventImage : UIImage = UIGraphicsGetImageFromCurrentImageContext()
-//        UIGraphicsEndImageContext()
-//        
-//        //-UnHide toolbar
-//        toolbarObject.hidden = false
-//        self.navigationController!.navigationBar.hidden = false
-//        datePickerLable.hidden = false
-//        datePickerButton.hidden = false
-//        textFieldEvent.hidden = false
-//        
-//        return changedEventImage
-//    }
 
     
     //-Create the adjusted Event Image
@@ -366,7 +338,6 @@ class BeGoodAddEventViewController: UIViewController, UIImagePickerControllerDel
         adjustImageLabel.hidden = true
         
         let rect: CGRect = view.bounds
-        //rect.size.height = rect.size.height - 0.0
         UIGraphicsBeginImageContextWithOptions(rect.size, true, 0.0)
         let context: CGContextRef = UIGraphicsGetCurrentContext()!
         view.layer.renderInContext(context)
@@ -389,12 +360,9 @@ class BeGoodAddEventViewController: UIViewController, UIImagePickerControllerDel
     func saveEvent() {
         
         //-Create the adjusted event image.
-        //self.changedEventImage = generateEventImage()
         self.changedEventImage = createSnapshotOfView()
         
-        
         let eventImage = UIImageJPEGRepresentation(self.changedEventImage, 100)
-        //let eventImage = UIImageJPEGRepresentation(imageViewPicker.image!, 100)
         
         //-Verify Selected Date is greater than current date before saving
         let dateFormatter = NSDateFormatter()
@@ -459,22 +427,7 @@ class BeGoodAddEventViewController: UIViewController, UIImagePickerControllerDel
                 self.sharedContext.refreshObject(event, mergeChanges: true)
                 CoreDataStackManager.sharedInstance().saveContext()
                 
-                
-//                //-Verify Selected Date is greater than current date before saving
-//                let dateFormatter = NSDateFormatter()
-//                dateFormatter.dateFormat = "yyyy/MM/dd hh:mm a"
-//                let eventDate1 = dateFormatter.stringFromDate(self.currentEventDate)
-//                let nowDate1 = dateFormatter.stringFromDate(NSDate())
-//                
-//                if eventDate1 <= nowDate1 {
-//                    print(eventDate1)
-//                    print(nowDate1)
-//                    print("Event Date is past due. Do not save")
-//                }
-                
-                
                 //-Create a corresponding local notification
-                //let dateFormatter = NSDateFormatter()
                 dateFormatter.dateFormat = "MMM dd 'at' h:mm a" // example: "Jan 01 at 12:00 PM"
 
                 let notification = UILocalNotification()
@@ -524,7 +477,6 @@ class BeGoodAddEventViewController: UIViewController, UIImagePickerControllerDel
                     notification.alertAction = "open" // text that is displayed after "slide to..." on the lock screen - defaults to "slide to view"
                     notification.fireDate = self.currentEventDate // todo item due date (when notification will be fired)
                     notification.soundName = UILocalNotificationDefaultSoundName // play default sound
-                    //notification.userInfo = ["title": dateFormatter.stringFromDate(self.currentEventDate)]
                     notification.userInfo = ["UUID": String(self.currentEventDate)]
                     UIApplication.sharedApplication().scheduleLocalNotification(notification)
                 
@@ -563,7 +515,7 @@ class BeGoodAddEventViewController: UIViewController, UIImagePickerControllerDel
     var eventsFilePath : String {
         let manager = NSFileManager.defaultManager()
         let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first! as NSURL
-        print(url.URLByAppendingPathComponent("events").path!)
+        //print(url.URLByAppendingPathComponent("events").path!)
         return url.URLByAppendingPathComponent("events").path!
     }
     
@@ -577,7 +529,6 @@ extension UIView {
         let height = UIScreen.mainScreen().bounds.size.height
         
         let imageViewBackground = UIImageView(frame: CGRectMake(0, 0, width, height))
-        //imageViewBackground.image = UIImage(named: "YOUR IMAGE NAME GOES HERE")
         
         // you can change the content mode:
         imageViewBackground.contentMode = UIViewContentMode.ScaleAspectFill

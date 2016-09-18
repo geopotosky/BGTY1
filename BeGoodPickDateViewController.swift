@@ -2,8 +2,8 @@
 //  BeGoodPickDateViewController.swift
 //  BeGoodToYourself
 //
-//  Created by George Potosky on 9/20/15.
-//  Copyright (c) 2015 GeoWorld. All rights reserved.
+//  Created by George Potosky October 2016.
+//  Copyright (c) 2016 GeoWorld. All rights reserved.
 //
 
 import UIKit
@@ -72,7 +72,6 @@ class BeGoodPickDateViewController: UIViewController {
         
         let timeZone = NSTimeZone(name: "Local")
         dateFormatter.timeZone = timeZone
-        //dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         //-To prevent displaying either date or time, set the desired style to NoStyle.
         dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle //Set time style
         dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle //Set date style

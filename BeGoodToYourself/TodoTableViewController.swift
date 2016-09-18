@@ -2,8 +2,8 @@
 //  TodoTableViewController.swift
 //  BeGoodToYourself
 //
-//  Created by George Potosky on 9/30/15.
-//  Copyright (c) 2015 GeoWorld. All rights reserved.
+//  Created by George Potosky October 2016.
+//  Copyright (c) 2016 GeoWorld. All rights reserved.
 //
 
 
@@ -23,7 +23,6 @@ class TodoTableViewController: UITableViewController, NSFetchedResultsController
         
         //-Create buttons
         self.navigationController!.navigationBar.barTintColor = UIColor(red:0.66,green:0.97,blue:0.59,alpha:1.0)
-        //let newBackButton = UIBarButtonItem(title: "Event", style: UIBarButtonItemStyle.Plain, target: self, action: "cancelTodoList")
         let newBackButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(TodoTableViewController.cancelTodoList))
         self.navigationItem.leftBarButtonItem = newBackButton
         

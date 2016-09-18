@@ -2,8 +2,8 @@
 //  MGButton.swift
 //  BeGoodToYourself
 //
-//  Created by George Potosky on 10/6/15.
-//  Copyright (c) 2015 GeoWorld. All rights reserved.
+//  Created by George Potosky October 2016.
+//  Copyright (c) 2016 GeoWorld. All rights reserved.
 //
 
 
@@ -14,10 +14,7 @@ import UIKit
 class MGButton: UIButton {
     required init?(coder Decoder: NSCoder) {
         super.init(coder: Decoder)
-        //let borderColor = UIColor(red:0.0,green:0.5,blue:0.8,alpha:1.0)
         let borderColor = UIColor.clearColor()
-        //let buttonColor = UIColor(red:0.6,green:0.2,blue:0.9,alpha:0.4)
-        //let buttonColor = UIColor(red:0.7,green:1.0,blue:0.6,alpha:1.0)
         let buttonColor = UIColor.clearColor()
         self.layer.cornerRadius = 5.0;
         self.layer.borderColor = borderColor.CGColor

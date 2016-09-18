@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  BeGoodToYourself
 //
-//  Created by George Potosky on 9/19/15.
-//  Copyright (c) 2015 GeoWorld. All rights reserved.
+//  Created by George Potosky October 2016.
+//  Copyright (c) 2016 GeoWorld. All rights reserved.
 //
 
 import UIKit

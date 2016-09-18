@@ -2,8 +2,8 @@
 //  BudgetEditTableViewController.swift
 //  BeGoodToYourself
 //
-//  Created by George Potosky on 10/10/15.
-//  Copyright (c) 2015 GeoWorld. All rights reserved.
+//  Created by George Potosky October 2016.
+//  Copyright (c) 2016 GeoWorld. All rights reserved.
 //
 
 import UIKit
@@ -18,7 +18,6 @@ class BudgetEditTableViewController: UITableViewController, UITextFieldDelegate,
     //-Global objects, properties & variables
     var events: Events!
     var budgetIndexPath: NSIndexPath!
-    //var budgetIndex: Int!
     var dataString:String?
     var priceString:String?
     

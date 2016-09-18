@@ -2,8 +2,8 @@
 //  BeGoodTableViewController.swift
 //  BeGoodToYourself
 //
-//  Created by George Potosky on 9/19/15.
-//  Copyright (c) 2015 GeoWorld. All rights reserved.
+//  Created by George Potosky October 2016.
+//  Copyright (c) 2016 GeoWorld. All rights reserved.
 //
 
 import UIKit
@@ -38,10 +38,6 @@ class BeGoodTableViewController: UIViewController, UITableViewDataSource, NSFetc
         self.navigationController!.navigationBar.barTintColor = UIColor(red:0.6,green:1.0,blue:0.6,alpha:1.0)
         self.navigationController!.navigationBar.translucent = false
         self.tabBarController?.tabBar.barTintColor = UIColor(red:0.6,green:1.0,blue:0.6,alpha:1.0)
-        //self.tabBarController?.tabBar.translucent = false
-        
-        //self.navigationController!.navigationBar.barTintColor = UIColor.greenColor()
-        //self.tabBarController?.tabBar.barTintColor = UIColor.greenColor()
         
         //-Add notification observer
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BeGoodTableViewController.refreshList), name: "TodoListShouldRefresh", object: nil)
@@ -160,7 +156,6 @@ class BeGoodTableViewController: UIViewController, UITableViewDataSource, NSFetc
         UIGraphicsBeginImageContextWithOptions(itemSize, false, CGFloat())
         let imageRect: CGRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height)
         cell.imageView!.image!.drawInRect(imageRect)
-        //cell.imageView!.contentMode = .ScaleAspectFill
         cell.imageView!.image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
@@ -254,22 +249,6 @@ class BeGoodTableViewController: UIViewController, UITableViewDataSource, NSFetc
                 break
             }
     }
-    
-    
-//    //-Delete Calendar Event
-//    func deleteEvent(eventStore: EKEventStore, eventIdentifier: String) {
-//        let eventStore = EKEventStore()
-//        let eventToRemove = eventStore.eventWithIdentifier(eventIdentifier)
-//        print(eventIdentifier)
-//        
-//        if (eventToRemove != nil) {
-//            do {
-//                try eventStore.removeEvent(eventToRemove!, span: .ThisEvent)
-//            } catch {
-//                print("Bad things happened")
-//            }
-//        }
-//    }
     
     
     func controllerWillChangeContent(controller: NSFetchedResultsController) {

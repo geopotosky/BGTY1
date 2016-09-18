@@ -2,8 +2,8 @@
 //  BeGoodPopoverViewController.swift
 //  BeGoodToYourself
 //
-//  Created by George Potosky on 10/15/15.
-//  Copyright (c) 2015 GeoWorld. All rights reserved.
+//  Created by George Potosky October 2016.
+//  Copyright (c) 2016 GeoWorld. All rights reserved.
 //
 
 
@@ -33,7 +33,6 @@ class BeGoodPopoverViewController: UITableViewController, UIPopoverPresentationC
         super.init(coder: aDecoder)!
         
         //-Cancel button
-        //navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: "tapCancel:")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: #selector(BeGoodPopoverViewController.tapCancel(_:)))
         //-Popover settings
         modalPresentationStyle = .Popover

@@ -2,8 +2,8 @@
 //  BeGoodCollectionViewController.swift
 //  BeGoodToYourself
 //
-//  Created by George Potosky on 9/19/15.
-//  Copyright (c) 2015 GeoWorld. All rights reserved.
+//  Created by George Potosky October 2016.
+//  Copyright (c) 2016 GeoWorld. All rights reserved.
 //
 
 import Foundation
@@ -418,7 +418,7 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
     var eventsFilePath : String {
         let manager = NSFileManager.defaultManager()
         let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first! as NSURL
-        print(url.URLByAppendingPathComponent("events").path!)
+        //print(url.URLByAppendingPathComponent("events").path!)
         return url.URLByAppendingPathComponent("events").path!
     }
     

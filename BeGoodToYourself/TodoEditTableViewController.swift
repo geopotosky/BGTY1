@@ -2,8 +2,8 @@
 //  TodoEditTableViewController.swift
 //  BeGoodToYourself
 //
-//  Created by George Potosky on 9/30/15.
-//  Copyright (c) 2015 GeoWorld. All rights reserved.
+//  Created by George Potosky October 2016.
+//  Copyright (c) 2016 GeoWorld. All rights reserved.
 //
 
 
@@ -18,7 +18,6 @@ class TodoEditTableViewController: UITableViewController, NSFetchedResultsContro
     //-Global objects, properties & variables
     var events: Events!
     var todosIndexPath: NSIndexPath!
-    //var todosIndex: Int!
     var editedModel:String?
     
     
