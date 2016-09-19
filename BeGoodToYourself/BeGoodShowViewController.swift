@@ -17,16 +17,11 @@ class BeGoodShowViewController : UIViewController, NSFetchedResultsControllerDel
     //-View Outlets
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var eventDate: UILabel!
-    //@IBOutlet weak var textFieldEvent: UILabel!
-    //@IBOutlet weak var textFieldEvent: UITextField!
     @IBOutlet weak var deleteEventButton: UIBarButtonItem!
     @IBOutlet weak var editEventButton: UIBarButtonItem!
     @IBOutlet weak var countDownLabel: UILabel!
-    //@IBOutlet weak var untilEventText: UILabel!
     @IBOutlet weak var untilEventSelector: UISegmentedControl!
-    //@IBOutlet weak var mgFactorButon: UIButton!
     @IBOutlet weak var mgFactorLabel: UILabel!
-    
     @IBOutlet weak var shareEventButton: UIToolbar!
     @IBOutlet weak var eventCalendarButton: UIButton!
     @IBOutlet weak var toolbarObject: UIToolbar!
