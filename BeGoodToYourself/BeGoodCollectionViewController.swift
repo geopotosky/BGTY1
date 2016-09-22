@@ -30,12 +30,12 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
     // The selected indexes array keeps all of the indexPaths for cells that are "selected". The array is
     // used inside cellForItemAtIndexPath to lower the alpha of selected cells.  You can see how the array
     // works by searchign through the code for 'selectedIndexes'
-    var selectedIndexes = [NSIndexPath]()
+    var selectedIndexes = [IndexPath]()
     
     //-Keep the changes. We will keep track of insertions, deletions, and updates.
-    var insertedIndexPaths: [NSIndexPath]!
-    var deletedIndexPaths: [NSIndexPath]!
-    var updatedIndexPaths: [NSIndexPath]!
+    var insertedIndexPaths: [IndexPath]!
+    var deletedIndexPaths: [IndexPath]!
+    var updatedIndexPaths: [IndexPath]!
     
     
     //-Perform when view loads
@@ -43,8 +43,8 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
         super.viewDidLoad()
         
         //-Create Navbar Buttons
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Edit, target: self, action: #selector(BeGoodCollectionViewController.editButton))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: #selector(BeGoodCollectionViewController.addEvent))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.edit, target: self, action: #selector(BeGoodCollectionViewController.editButton))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.add, target: self, action: #selector(BeGoodCollectionViewController.addEvent))
                 
         //-Manage Top and Bottom bar colors
         self.navigationController!.navigationBar.barTintColor = UIColor(red:0.66,green:0.97,blue:0.59,alpha:1.0)
@@ -59,10 +59,10 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
         fetchedResultsController.delegate = self
         
         // Unarchive the event when the list is first shown
-        self.events = NSKeyedUnarchiver.unarchiveObjectWithFile(eventsFilePath) as? [Events] ?? [Events]()
+        self.events = NSKeyedUnarchiver.unarchiveObject(withFile: eventsFilePath) as? [Events] ?? [Events]()
         
         //-Add notification observer
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BeGoodCollectionViewController.refreshList), name: "TodoListShouldRefresh", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(BeGoodCollectionViewController.refreshList), name: NSNotification.Name(rawValue: "TodoListShouldRefresh"), object: nil)
     }
     
     
@@ -90,24 +90,24 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
     //-Only allow 64 events (push notification limitation)
     func refreshList() {
         if (events.count >= 64) {
-            self.navigationItem.rightBarButtonItem!.enabled = false // disable 'add' button
+            self.navigationItem.rightBarButtonItem!.isEnabled = false // disable 'add' button
         }
         collectionView.reloadData()
     }
     
     
     //-Perform when view will appear
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         //-Archive the graph any time this list of events is displayed.
         NSKeyedArchiver.archiveRootObject(self.events, toFile: eventsFilePath)
         
         //-Hide the tab bar
-        self.tabBarController?.tabBar.hidden = false
+        self.tabBarController?.tabBar.isHidden = false
         
-        bottomButton.hidden = true
-        SelectEventLabel.hidden = true
+        bottomButton.isHidden = true
+        SelectEventLabel.isHidden = true
         
         editButtonFlag = true
         
@@ -117,7 +117,7 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
     
     
     //-Perform when view did appear
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         //-Brute Force Reload the scene to view collection updates
@@ -126,18 +126,18 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
     
     
     //-Reset the collection Edit view when the view disappears
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         
         self.navigationItem.hidesBackButton = true
-        let newBackButton = UIBarButtonItem(title: "Edit", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(BeGoodCollectionViewController.editButton))
+        let newBackButton = UIBarButtonItem(title: "Edit", style: UIBarButtonItemStyle.plain, target: self, action: #selector(BeGoodCollectionViewController.editButton))
         self.navigationItem.leftBarButtonItem = newBackButton
         
-        bottomButton.hidden = true
+        bottomButton.isHidden = true
         editButtonFlag = true
         
         let index : Int = 0
         for _ in selectedIndexes{
-            selectedIndexes.removeAtIndex(index)
+            selectedIndexes.remove(at: index)
         }
     }
     
@@ -155,17 +155,17 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
             
             //-Recreate navigation Back button and change name to "Edit"
             self.navigationItem.hidesBackButton = true
-            let newBackButton = UIBarButtonItem(title: "Edit", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(BeGoodCollectionViewController.editButton))
+            let newBackButton = UIBarButtonItem(title: "Edit", style: UIBarButtonItemStyle.plain, target: self, action: #selector(BeGoodCollectionViewController.editButton))
             self.navigationItem.leftBarButtonItem = newBackButton
             editButtonFlag = true
             //-Hide the bottom text and button
-            bottomButton.hidden = true
-            SelectEventLabel.hidden = true
+            bottomButton.isHidden = true
+            SelectEventLabel.isHidden = true
             
             //-Reset the collection view cells
             let index : Int = 0
             for _ in selectedIndexes{
-                selectedIndexes.removeAtIndex(index)
+                selectedIndexes.remove(at: index)
             }
             //-Brute Force Reload the scene to view collection updates
             self.collectionView.reloadData()
@@ -175,31 +175,31 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
             
             //-Recreate navigation Back button and change name to "Done"
             self.navigationItem.hidesBackButton = true
-            let newBackButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(BeGoodCollectionViewController.editButton))
+            let newBackButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.plain, target: self, action: #selector(BeGoodCollectionViewController.editButton))
             self.navigationItem.leftBarButtonItem = newBackButton
             editButtonFlag = false
             //-Make bottom text visible
-            SelectEventLabel.hidden = false
+            SelectEventLabel.isHidden = false
         }
     }
     
     
     //-UICollectionView
     
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return self.fetchedResultsController.sections?.count ?? 0
     }
     
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let sectionInfo = self.fetchedResultsController.sections![section]
         return sectionInfo.numberOfObjects
     }
     
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("BeGoodCollectionViewCell", forIndexPath: indexPath) as! BeGoodCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BeGoodCollectionViewCell", for: indexPath) as! BeGoodCollectionViewCell
         configureCell(cell, atIndexPath: indexPath)
         
         return cell
@@ -207,22 +207,22 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
     }
     
     
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: IndexPath) {
         
         if editButtonFlag == false {
             
-            let cell = collectionView.cellForItemAtIndexPath(indexPath) as! BeGoodCollectionViewCell
+            let cell = collectionView.cellForItem(at: indexPath) as! BeGoodCollectionViewCell
             
             //-Whenever a cell is tapped we will toggle its presence in the selectedIndexes array
-            if let index = selectedIndexes.indexOf(indexPath) {
-                selectedIndexes.removeAtIndex(index)
+            if let index = selectedIndexes.index(of: indexPath) {
+                selectedIndexes.remove(at: index)
             }
             else {
                 
                 //-De-select the previously selected cell
                 let index : Int = 0
                 for _ in selectedIndexes{
-                    selectedIndexes.removeAtIndex(index)
+                    selectedIndexes.remove(at: index)
                 }
                 //-Brute Force Reload the scene to view collection updates
                 self.collectionView.reloadData()
@@ -236,10 +236,10 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
         } else {
             
             let controller =
-            storyboard!.instantiateViewControllerWithIdentifier("BeGoodShowViewController") as! BeGoodShowViewController
+            storyboard!.instantiateViewController(withIdentifier: "BeGoodShowViewController") as! BeGoodShowViewController
 
             controller.eventIndexPath = indexPath
-            controller.eventIndex = indexPath.row
+            controller.eventIndex = (indexPath as NSIndexPath).row
             
             self.navigationController!.pushViewController(controller, animated: true)
             
@@ -248,23 +248,25 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
     
     
     //-Configure Cell
-    func configureCell(cell: BeGoodCollectionViewCell, atIndexPath indexPath: NSIndexPath) {
+    func configureCell(_ cell: BeGoodCollectionViewCell, atIndexPath indexPath: IndexPath) {
         
-        let event = fetchedResultsController.objectAtIndexPath(indexPath) as! Events
+        let event = fetchedResultsController.object(at: indexPath) 
         
         //-Format the Date for the cell
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.timeStyle = NSDateFormatterStyle.NoStyle //Set time style
-        dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle //Set date style
-        dateFormatter.timeZone = NSTimeZone()
+        let dateFormatter = DateFormatter()
+        let timeZone = TimeZone(identifier: "Local")
+        dateFormatter.timeZone = timeZone
+        dateFormatter.timeStyle = DateFormatter.Style.none //Set time style
+        dateFormatter.dateStyle = DateFormatter.Style.short //Set date style
+        //dateFormatter.timeZone = TimeZone()
         
         if (event.isOverdue) { // the current time is later than the to-do item's deadline
-            cell.eventDateCellLabel?.textColor = UIColor.redColor()
+            cell.eventDateCellLabel?.textColor = UIColor.red
         } else {
-            cell.eventDateCellLabel?.textColor = UIColor.whiteColor() // we need to reset this because a cell with red
+            cell.eventDateCellLabel?.textColor = UIColor.white // we need to reset this because a cell with red
         }
         
-        cell.eventDateCellLabel!.text = dateFormatter.stringFromDate(event.eventDate!)
+        cell.eventDateCellLabel!.text = dateFormatter.string(from: event.eventDate!)
         
         let eventImage2 = event.eventImage
         let finalImage = UIImage(data: eventImage2!)
@@ -272,59 +274,60 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
         cell.layer.cornerRadius = 7.0
         
         //-Change cell appearance based on selection for deletion
-        if self.selectedIndexes.indexOf(indexPath) != nil {
+        if self.selectedIndexes.index(of: indexPath) != nil {
             cell.eventImageView!.alpha = 0.5
-            bottomButton.hidden = false
-            SelectEventLabel.hidden = true
+            bottomButton.isHidden = false
+            SelectEventLabel.isHidden = true
         } else {
             cell.eventImageView!.alpha = 1.0
             if selectedIndexes.isEmpty {
-                bottomButton.hidden = true
+                bottomButton.isHidden = true
             }
         }
     }
     
     
     //-NSFetchedResultsController
-    lazy var fetchedResultsController: NSFetchedResultsController = {
+    lazy var fetchedResultsController: NSFetchedResultsController<Events> = {
         
-        let fetchRequest = NSFetchRequest(entityName: "Events")
+        let fetchRequest = NSFetchRequest<Events>(entityName: "Events")
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "textEvent", ascending: true)]
-        
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.sharedContext, sectionNameKeyPath: nil, cacheName: nil)
-        fetchedResultsController.delegate = self
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+            managedObjectContext: self.sharedContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
         
         return fetchedResultsController
-        }()
-    
+        
+    }()
     
     //-Fetched Results Controller Delegate
     
     //-Whenever changes are made to Core Data the following three methods are invoked. This first method is used to
     //-create three fresh arrays to record the index paths that will be changed.
-    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // We are about to handle some new changes. Start out with empty arrays for each change type
-        insertedIndexPaths = [NSIndexPath]()
-        deletedIndexPaths = [NSIndexPath]()
-        updatedIndexPaths = [NSIndexPath]()
+        insertedIndexPaths = [IndexPath]()
+        deletedIndexPaths = [IndexPath]()
+        updatedIndexPaths = [IndexPath]()
     }
     
     //-The second method may be called multiple times, once for each picture object that is added, deleted, or changed.
     //-We store the index paths into the three arrays.
-    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
         switch type{
             
-        case .Insert:
+        case .insert:
             insertedIndexPaths.append(newIndexPath!)
             break
-        case .Delete:
+        case .delete:
             deletedIndexPaths.append(indexPath!)
             break
-        case .Update:
+        case .update:
             updatedIndexPaths.append(indexPath!)
             break
-        case .Move:
+        case .move:
             break
         }
     }
@@ -336,20 +339,20 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
     //
     //-The most interesting thing about the method is the collection view's "performBatchUpdates" method.
     //-Notice that all of the changes are performed inside a closure that is handed to the collection view.
-    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         
         collectionView.performBatchUpdates({() -> Void in
             
             for indexPath in self.insertedIndexPaths {
-                self.collectionView.insertItemsAtIndexPaths([indexPath])
+                self.collectionView.insertItems(at: [indexPath])
             }
             
             for indexPath in self.deletedIndexPaths {
-                self.collectionView.deleteItemsAtIndexPaths([indexPath])
+                self.collectionView.deleteItems(at: [indexPath])
             }
             
             for indexPath in self.updatedIndexPaths {
-                self.collectionView.reloadItemsAtIndexPaths([indexPath])
+                self.collectionView.reloadItems(at: [indexPath])
             }
             
             }, completion: nil)
@@ -365,8 +368,8 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
     //-Delete All Pictures before adding new pictures function
     func deleteAllEvents() {
         
-        for event in self.fetchedResultsController.fetchedObjects as! [Events] {
-            self.sharedContext.deleteObject(event)
+        for event in self.fetchedResultsController.fetchedObjects as [Events]! {
+            self.sharedContext.delete(event)
         }
     }
     
@@ -377,29 +380,29 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
         var eventsToDelete = [Events]()
         
         for indexPath in selectedIndexes {
-            eventsToDelete.append(fetchedResultsController.objectAtIndexPath(indexPath) as! Events)
+            eventsToDelete.append(fetchedResultsController.object(at: indexPath) )
         }
         
         for event in eventsToDelete {
             
             //-Delete the event notificaton
-            if String(event.eventDate!) > String(NSDate()) { //...if event date is greater than the current date, remove the upcoming notification. If not, skip this routine.
+            if String(describing: event.eventDate!) > String(describing: Date()) { //...if event date is greater than the current date, remove the upcoming notification. If not, skip this routine.
                 
-                for notification in UIApplication.sharedApplication().scheduledLocalNotifications! as [UILocalNotification] { // loop through notifications...
-                    if (notification.userInfo!["UUID"] as! String == String(event.eventDate!)) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
-                        UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on title
+                for notification in UIApplication.shared.scheduledLocalNotifications! as [UILocalNotification] { // loop through notifications...
+                    if (notification.userInfo!["UUID"] as! String == String(describing: event.eventDate!)) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
+                        UIApplication.shared.cancelLocalNotification(notification) // there should be a maximum of one match on title
                         break
                     }
                 }
             }
             
-            sharedContext.deleteObject(event)
+            sharedContext.delete(event)
         }
         
-        selectedIndexes = [NSIndexPath]()
+        selectedIndexes = [IndexPath]()
         //-Save Object
         CoreDataStackManager.sharedInstance().saveContext()
-        bottomButton.hidden = true
+        bottomButton.isHidden = true
         
         //-Archive the graph any time this list of events changes
         NSKeyedArchiver.archiveRootObject(self.events, toFile: eventsFilePath)
@@ -408,7 +411,7 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
     
     //-Create a New Event
     func addEvent() {        
-        let controller = self.storyboard?.instantiateViewControllerWithIdentifier("BeGoodAddEventViewController") as! BeGoodAddEventViewController
+        let controller = self.storyboard?.instantiateViewController(withIdentifier: "BeGoodAddEventViewController") as! BeGoodAddEventViewController
         controller.editEventFlag = false
         self.navigationController!.pushViewController(controller, animated: true)
     }
@@ -416,10 +419,10 @@ class BeGoodCollectionViewController: UIViewController, UICollectionViewDataSour
     
     //-Saving the array. Helper.
     var eventsFilePath : String {
-        let manager = NSFileManager.defaultManager()
-        let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first! as NSURL
+        let manager = FileManager.default
+        let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first! as URL
         //print(url.URLByAppendingPathComponent("events").path!)
-        return url.URLByAppendingPathComponent("events").path!
+        return url.appendingPathComponent("events").path
     }
     
 }

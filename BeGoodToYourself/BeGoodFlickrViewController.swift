@@ -23,8 +23,8 @@ class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
     var editEventFlag2: Bool!
     var searchFlag: Bool!
     var flickrImageURL: String!
-    var eventIndexPath2: NSIndexPath!
-    var eventImage2: NSData!
+    var eventIndexPath2: IndexPath!
+    var eventImage2: Data!
     var currentImage: UIImage!
     var tapRecognizer: UITapGestureRecognizer? = nil
 
@@ -33,7 +33,7 @@ class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
     let flickrTextDelegate = FlickrTextDelegate()
     
     //-Get the app delegate (used for Flickr API)
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     //-Alert variable
     var alertMessage: String!
@@ -51,9 +51,9 @@ class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
         tapRecognizer?.numberOfTapsRequired = 1
         
         searchFlag = false
-        pickImageButton.hidden = true
-        flickrActivityIndicator.hidden = true
-        flickrActivityFrame.hidden = true
+        pickImageButton.isHidden = true
+        flickrActivityIndicator.isHidden = true
+        flickrActivityFrame.isHidden = true
         
         searchBar.delegate = self
         
@@ -61,7 +61,7 @@ class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
     
     
     //-Perform when view will appear
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         //-Add tap recognizer to dismiss keyboard
@@ -69,16 +69,16 @@ class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
         
         //-Display the current or default event image
         if editEventFlag2 == false {
-            self.tempImage.hidden = false
+            self.tempImage.isHidden = false
         } else {
-            self.tempImage.hidden = true
+            self.tempImage.isHidden = true
             self.photoImageView.image = currentImage
         }
     }
     
     
     //-Perform when view will disappear
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         //-Remove tap recognizer
@@ -89,16 +89,16 @@ class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
     
     
     //-Call the Flicker Search API with Search Bar
-    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
         searchFlag = true
-        pickImageButton.hidden = true
-        self.tempImage.hidden = true
+        pickImageButton.isHidden = true
+        self.tempImage.isHidden = true
         
         self.flickrActivityFrame.layer.cornerRadius = 47
-        self.flickrActivityFrame.backgroundColor = UIColor.whiteColor()
-        self.flickrActivityFrame.hidden = false
-        self.flickrActivityIndicator.hidden = false
+        self.flickrActivityFrame.backgroundColor = UIColor.white
+        self.flickrActivityFrame.isHidden = false
+        self.flickrActivityIndicator.isHidden = false
         self.flickrActivityIndicator.startAnimating()
         
         
@@ -114,7 +114,7 @@ class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
         
         if self.searchBar.text!.isEmpty {
             
-            self.flickrActivityIndicator.hidden = true
+            self.flickrActivityIndicator.isHidden = true
             self.flickrActivityIndicator.stopAnimating()
             //-If Phrase is empty, display Empty message
             self.alertMessage = "Search Phrase is Missing"
@@ -128,24 +128,24 @@ class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
                 if success {
                     
                     self.flickrImageURL = pictureURL
-                    let imageURL = NSURL(string: pictureURL!)
+                    let imageURL = URL(string: pictureURL!)
                     
                     //-If an image exists at the url, set the image and title
-                    if let imageData = NSData(contentsOfURL: imageURL!) {
+                    if let imageData = try? Data(contentsOf: imageURL!) {
                         self.eventImage2 = imageData
                         
-                        dispatch_async(dispatch_get_main_queue(), {
+                        DispatchQueue.main.async(execute: {
                             self.photoImageView.image = UIImage(data: imageData)
-                            self.tempImage.hidden = true
-                            self.pickImageButton.hidden = false
-                            self.flickrActivityIndicator.hidden = true
-                            self.flickrActivityFrame.hidden = true
+                            self.tempImage.isHidden = true
+                            self.pickImageButton.isHidden = false
+                            self.flickrActivityIndicator.isHidden = true
+                            self.flickrActivityFrame.isHidden = true
                             self.flickrActivityIndicator.stopAnimating()
                         })
                         
                     } else {
-                        dispatch_async(dispatch_get_main_queue(), {
-                            self.tempImage.hidden = false
+                        DispatchQueue.main.async(execute: {
+                            self.tempImage.isHidden = false
                         })
                     }
                     
@@ -163,7 +163,7 @@ class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
 
 
     //-Pick the selected image button
-    @IBAction func pickFlickrImage(sender: UIButton) {
+    @IBAction func pickFlickrImage(_ sender: UIButton) {
         
         //-If edit event flag is set to true, then prep for return to Add VC for existing event
         if editEventFlag2 == true {
@@ -173,7 +173,7 @@ class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
             controller.flickrImage = self.photoImageView.image
             controller.imageFlag = 3
 
-            self.navigationController?.popViewControllerAnimated(true)
+            self.navigationController!.popViewController(animated: true)
             
         //-If edit event flag is set to false, then prep for return to Add VC for new event
         } else {
@@ -183,7 +183,7 @@ class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
             controller.flickrImage = self.photoImageView.image
             controller.imageFlag = 3
 
-            self.navigationController?.popViewControllerAnimated(true)
+            self.navigationController!.popViewController(animated: true)
         }
         
     }
@@ -201,7 +201,7 @@ class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
         self.view.removeGestureRecognizer(tapRecognizer!)
     }
     
-    func handleSingleTap(recognizer: UITapGestureRecognizer) {
+    func handleSingleTap(_ recognizer: UITapGestureRecognizer) {
         //-End editing here
         self.view.endEditing(true)
     }
@@ -209,36 +209,37 @@ class BeGoodFlickrViewController: UIViewController, UISearchBarDelegate {
     
     //-Alert Message function
     func errorAlertMessage(){
-        dispatch_async(dispatch_get_main_queue()) {
-            let actionSheetController: UIAlertController = UIAlertController(title: "Alert!", message: "\(self.alertMessage)", preferredStyle: .Alert)
+        DispatchQueue.main.async {
+            let actionSheetController: UIAlertController = UIAlertController(title: "Alert!", message: "\(self.alertMessage!)", preferredStyle: .alert)
             
-            self.flickrActivityIndicator.hidden = true
+            self.flickrActivityIndicator.isHidden = true
             self.flickrActivityIndicator.stopAnimating()
-            self.flickrActivityFrame.hidden = true
+            self.flickrActivityFrame.isHidden = true
             
             //-Update alert colors and attributes
-            actionSheetController.view.tintColor = UIColor.blueColor()
+            actionSheetController.view.tintColor = UIColor.blue
             let subview = actionSheetController.view.subviews.first! 
             let alertContentView = subview.subviews.first! 
-            alertContentView.backgroundColor = UIColor(red:0.6,green:1.0,blue:0.6,alpha:1.0)
-            alertContentView.layer.cornerRadius = 5;
+            //alertContentView.backgroundColor = UIColor(red:0.6,green:1.0,blue:0.6,alpha:1.0)
+            //alertContentView.backgroundColor = UIColor.green
+            alertContentView.layer.cornerRadius = 12
             
             //-Create and add the OK action
-            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Default) { action -> Void in
+            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .default) { action -> Void in
             }
             actionSheetController.addAction(okAction)
             
             //-Present the AlertController
-            self.presentViewController(actionSheetController, animated: true, completion: nil)
+            self.present(actionSheetController, animated: true, completion: nil)
         }
     }
     
 }
 
-//-This extension was added as a fix based on student comments
+//-This extension was added as a fix based on comments
 extension BeGoodFlickrViewController {
     func dismissAnyVisibleKeyboards() {
-        if searchBar.isFirstResponder() {
+        if searchBar.isFirstResponder {
             self.view.endEditing(true)
         }
     }

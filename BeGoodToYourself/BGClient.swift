@@ -15,16 +15,16 @@ import CoreData
 class BGClient : NSObject {
     
     //-Shared session
-    var session: NSURLSession
+    var session: URLSession
     
     //-Get the app delegate
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     //-Objects
     var events: Events!
     
     override init() {
-        session = NSURLSession.sharedSession()
+        session = URLSession.shared
         super.init()
     }
     
@@ -35,7 +35,7 @@ class BGClient : NSObject {
     
     
     //-Get Flickr Pictures Loop
-    func getFlickrData(hostViewController: UIViewController, completionHandler: (success: Bool, pictureURL: String?, errorString: String?) -> Void) {
+    func getFlickrData(_ hostViewController: UIViewController, completionHandler: @escaping (_ success: Bool, _ pictureURL: String?, _ errorString: String?) -> Void) {
         
         //-Assign Search Phrase shared value
         let searchPhrase = appDelegate.phraseText
@@ -51,18 +51,18 @@ class BGClient : NSObject {
         ]
         
         //-Call the Flickr API methods and pass back to Flickr View Controller
-        self.getImageFromFlickrBySearch(methodArguments) { (success, pageNumber, errorString) in
+        self.getImageFromFlickrBySearch(methodArguments as [String : AnyObject]) { (success, pageNumber, errorString) in
             
             if success {
-                self.getImageFromFlickrBySearchWithPage(methodArguments, pageNumber: pageNumber) { (success, pictureURL,errorString) in
+                self.getImageFromFlickrBySearchWithPage(methodArguments as [String : AnyObject], pageNumber: pageNumber) { (success, pictureURL,errorString) in
                     if success {
-                        completionHandler(success: true, pictureURL: pictureURL, errorString: errorString)
+                        completionHandler(true, pictureURL, errorString)
                     } else {
-                        completionHandler(success: success, pictureURL: nil, errorString: errorString)
+                        completionHandler(success, nil, errorString)
                     }
                 }
             } else {
-                completionHandler(success: success, pictureURL: nil, errorString: errorString)
+                completionHandler(success, nil, errorString)
             }
         }
     }
@@ -70,25 +70,25 @@ class BGClient : NSObject {
     
     //-Flickr API function
     //-Make first request to get a random page, then makes a request to get an image with the random page
-    func getImageFromFlickrBySearch(methodArguments: [String : AnyObject], completionHandler: (success: Bool, pageNumber: Int, errorString: String?) -> Void) {
+    func getImageFromFlickrBySearch(_ methodArguments: [String : AnyObject], completionHandler: @escaping (_ success: Bool, _ pageNumber: Int, _ errorString: String?) -> Void) {
         
         //-Get the Shared NSURLSession to facilitate Network Activity
-        let session = NSURLSession.sharedSession()
+        let session = URLSession.shared
         //-Create the NSURLRequest using properly escaped URL
         let urlString = Constants.BASE_URL + escapedParameters(methodArguments)
-        let url = NSURL(string: urlString)!
-        let request = NSURLRequest(URL: url)
+        let url = URL(string: urlString)!
+        let request = URLRequest(url: url)
         
         //-Create NSURLSessionDataTask and completion handler
-        let task = session.dataTaskWithRequest(request) {data, response, downloadError in
+        let task = session.dataTask(with: request, completionHandler: {data, response, downloadError in
             if downloadError != nil {
-                completionHandler(success: false, pageNumber: 0, errorString: "Could not complete the request. Try Again.")
+                completionHandler(false, 0, "Could not complete the request. Try Again.")
             } else {
                 
-                let parsedResult = (try! NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments)) as! NSDictionary
+                let parsedResult = (try! JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments)) as! NSDictionary
                 
                 //-Get the photos dictionary
-                if let photosDictionary = parsedResult.valueForKey("photos") as? [String:AnyObject] {
+                if let photosDictionary = parsedResult.value(forKey: "photos") as? [String:AnyObject] {
                     
                     //-Determine the total number of photos
                     if let totalPages = photosDictionary["pages"] as? Int {
@@ -96,44 +96,44 @@ class BGClient : NSObject {
                         //-Flickr API - will only return up the 4000 images (100 per page * 40 page max)
                         let pageLimit = min(totalPages, 40)
                         let randomPage = Int(arc4random_uniform(UInt32(pageLimit))) + 1
-                        completionHandler(success: true, pageNumber: randomPage, errorString: nil)
+                        completionHandler(true, randomPage, nil)
                         
                     } else {
-                        completionHandler(success: false, pageNumber: 0, errorString: "No Image Found. Try Again.")
+                        completionHandler(false, 0, "No Image Found. Try Again.")
                     }
                 } else {
-                    completionHandler(success: false, pageNumber: 0, errorString: "No Image Found. Try Again.")
+                    completionHandler(false, 0, "No Image Found. Try Again.")
                 }
             }
-        }
+        }) 
         //-Resume (execute) the task
         task.resume()
     }
     
     
-    func getImageFromFlickrBySearchWithPage(methodArguments: [String : AnyObject], pageNumber: Int, completionHandler: (success: Bool, pictureURL: String?, errorString: String?) -> Void) {
+    func getImageFromFlickrBySearchWithPage(_ methodArguments: [String : AnyObject], pageNumber: Int, completionHandler: @escaping (_ success: Bool, _ pictureURL: String?, _ errorString: String?) -> Void) {
         
         //-Add the page to the method's arguments
         var withPageDictionary = methodArguments
-        withPageDictionary["page"] = pageNumber
+        withPageDictionary["page"] = pageNumber as AnyObject?
         
         //-Get the Shared NSURLSession to facilitate Network Activity
-        let session = NSURLSession.sharedSession()
+        let session = URLSession.shared
         
         //-Create the NSURLRequest using properly escaped URL
         let urlString = Constants.BASE_URL + escapedParameters(withPageDictionary)
-        let url = NSURL(string: urlString)!
-        let request = NSURLRequest(URL: url)
+        let url = URL(string: urlString)!
+        let request = URLRequest(url: url)
         
         //-Create NSURLSessionDataTask and completion handler
-        let task = session.dataTaskWithRequest(request) {data, response, downloadError in
+        let task = session.dataTask(with: request, completionHandler: {data, response, downloadError in
             if downloadError != nil {
-                completionHandler(success: false, pictureURL: nil, errorString: "Could not complete the request. Try Again")
+                completionHandler(false, nil, "Could not complete the request. Try Again")
             } else {
-                let parsedResult = (try! NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments)) as! NSDictionary
+                let parsedResult = (try! JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments)) as! NSDictionary
                 
                 //-Get the photos dictionary
-                if let photosDictionary = parsedResult.valueForKey("photos") as? [String:AnyObject] {
+                if let photosDictionary = parsedResult.value(forKey: "photos") as? [String:AnyObject] {
                     
                     //-Determine the total number of photos
                     var totalPhotosVal = 0
@@ -154,7 +154,7 @@ class BGClient : NSObject {
                             
                             //-Watch for an empty random photo index
                             if randomPhotoIndex == 0 {
-                                completionHandler(success: false, pictureURL: nil, errorString: "No Image Found. Try Again.")
+                                completionHandler(false, nil, "No Image Found. Try Again.")
                             }
                             else {
                             
@@ -162,40 +162,52 @@ class BGClient : NSObject {
                             
                                 //-Get the image url
                                 let imageUrlString = photoDictionary["url_m"] as? String
-                                let imageURL = NSURL(string: imageUrlString!)
-                                let urlRequest = NSURLRequest(URL: imageURL!)
-                                let mainQueue = NSOperationQueue()
-                            
-                                NSURLConnection.sendAsynchronousRequest(urlRequest, queue: mainQueue, completionHandler:{(response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
-                                    if data!.length > 0 && error == nil {
+                                let imageURL = URL(string: imageUrlString!)
+                                //let urlRequest = URLRequest(url: imageURL!)
+                                //let mainQueue = OperationQueue()
+                                
+                                /* If an image exists at the url, set the image and title */
+                                if NSData(contentsOf: imageURL!) != nil {
+                                    DispatchQueue.main.async {
+                                        completionHandler(true, imageUrlString, nil)
+                                        }
+                                        //completionHandler(true, imageUrlString, nil)
+                                }else {
+                                        completionHandler(false, nil, "No Image Found. Try Again.")
+                                    }
 
-                                        completionHandler(success: true, pictureURL: imageUrlString, errorString: nil)
-                                    }
-                                    else {
-                                        completionHandler(success: false, pictureURL: nil, errorString: "No Image Found. Try Again.")
-                                    }
-                                }) //-End NSURLConnection routine
+                                
+                                
+                                //NSURLConnection.sendAsynchronousRequest(urlRequest, queue: mainQueue, completionHandler://{(response: URLResponse?, data: Data?, error: NSError?) -> Void in
+                                    //if data!.count > 0 && error == nil {
+
+                                        //completionHandler(true, imageUrlString, nil)
+                                    //}
+                                    //else {
+                                        //completionHandler(false, nil, "No Image Found. Try Again.")
+                                    //}
+                                //} as! (URLResponse?, Data?, Error?) -> Void ) //-End NSURLConnection routine
 
                             } //-End Fix flickr Index Out of Range Error
                             
                         } else {
-                            completionHandler(success: false, pictureURL: nil, errorString: "No Image Found. Try Again.")
+                            completionHandler(false, nil, "No Image Found. Try Again.")
                         }
                     } else {
-                        completionHandler(success: false, pictureURL: nil, errorString: "No Image Found. Try Again.")
+                        completionHandler(false, nil, "No Image Found. Try Again.")
                     }
                 } else {
-                    completionHandler(success: false, pictureURL: nil, errorString: "No Image Found. Try Again.")
+                    completionHandler(false, nil, "No Image Found. Try Again.")
                 }
             }
-        }
+        }) 
         
         task.resume()
     }
     
     
     //-Helper function: Given a dictionary of parameters, convert to a string for a url
-    func escapedParameters(parameters: [String : AnyObject]) -> String {
+    func escapedParameters(_ parameters: [String : AnyObject]) -> String {
         
         var urlVars = [String]()
         
@@ -205,14 +217,14 @@ class BGClient : NSObject {
             let stringValue = "\(value)"
             
             //-Escape it
-            let escapedValue = stringValue.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())
+            let escapedValue = stringValue.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
             
             //-Append it
             urlVars += [key + "=" + "\(escapedValue!)"]
             
         }
         
-        return (!urlVars.isEmpty ? "?" : "") + urlVars.joinWithSeparator("&")
+        return (!urlVars.isEmpty ? "?" : "") + urlVars.joined(separator: "&")
     }
         
     

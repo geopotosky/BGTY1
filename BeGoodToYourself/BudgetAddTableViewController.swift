@@ -34,20 +34,20 @@ class BudgetAddTableViewController: UITableViewController, UITextFieldDelegate {
     }
     
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if indexPath.section == 0 && indexPath.row == 0 {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if (indexPath as NSIndexPath).section == 0 && (indexPath as NSIndexPath).row == 0 {
             textField.becomeFirstResponder()
         }
-        else if indexPath.section == 1 && indexPath.row == 0 {
+        else if (indexPath as NSIndexPath).section == 1 && (indexPath as NSIndexPath).row == 0 {
             priceTextField.becomeFirstResponder()
         }
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     
     //-Navigation
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "saveDataAdd" {
             dataString = textField.text
             priceString = priceTextField.text

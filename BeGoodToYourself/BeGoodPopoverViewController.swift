@@ -12,9 +12,9 @@ import CoreData
 
 
 enum AdaptiveMode{
-    case Default
-    case LandscapePopover
-    case AlwaysPopover
+    case `default`
+    case landscapePopover
+    case alwaysPopover
 }
 
 
@@ -26,7 +26,7 @@ class BeGoodPopoverViewController: UITableViewController, UIPopoverPresentationC
     
     //-Global objects, properties & variables
     var events: Events!
-    var eventIndexPath2: NSIndexPath!
+    var eventIndexPath2: IndexPath!
     
     //-Info Alert variables
     var infoMessage: String!
@@ -37,9 +37,9 @@ class BeGoodPopoverViewController: UITableViewController, UIPopoverPresentationC
         super.init(coder: aDecoder)!
         
         //-Cancel button
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: #selector(BeGoodPopoverViewController.tapCancel(_:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.cancel, target: self, action: #selector(BeGoodPopoverViewController.tapCancel(_:)))
         //-Popover settings
-        modalPresentationStyle = .Popover
+        modalPresentationStyle = .popover
         popoverPresentationController!.delegate = self
         self.preferredContentSize = CGSize(width:200,height:200)
     }
@@ -47,7 +47,7 @@ class BeGoodPopoverViewController: UITableViewController, UIPopoverPresentationC
     
     func tapCancel(_ : UIBarButtonItem) {
         //-tap cancel
-        dismissViewControllerAnimated(true, completion:nil)
+        dismiss(animated: true, completion:nil)
     }
     
     
@@ -55,7 +55,7 @@ class BeGoodPopoverViewController: UITableViewController, UIPopoverPresentationC
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.popoverPresentationController?.backgroundColor = UIColor.whiteColor()
+        self.popoverPresentationController?.backgroundColor = UIColor.white
         
         do {
             try fetchedResultsController.performFetch()
@@ -74,12 +74,10 @@ class BeGoodPopoverViewController: UITableViewController, UIPopoverPresentationC
     
     
     //-Fetched Results Controller
-    lazy var fetchedResultsController: NSFetchedResultsController = {
+    lazy var fetchedResultsController: NSFetchedResultsController<Events> = {
         
-        let fetchRequest = NSFetchRequest(entityName: "Events")
-        
+        let fetchRequest = NSFetchRequest<Events>(entityName: "Events")
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "textEvent", ascending: true)]
-        
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
             managedObjectContext: self.sharedContext,
             sectionNameKeyPath: nil,
@@ -87,35 +85,35 @@ class BeGoodPopoverViewController: UITableViewController, UIPopoverPresentationC
         
         return fetchedResultsController
         
-        }()
+    }()
     
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath){
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
 
-        let eventMenu = tableView.cellForRowAtIndexPath(indexPath)!.textLabel!.text
+        let eventMenu = tableView.cellForRow(at: indexPath)!.textLabel!.text
         if eventMenu == "To Do List" {
             
-            let controller = self.storyboard?.instantiateViewControllerWithIdentifier("TodoTableViewController") as! TodoTableViewController
-            let event = fetchedResultsController.objectAtIndexPath(eventIndexPath2) as! Events
+            let controller = self.storyboard?.instantiateViewController(withIdentifier: "TodoTableViewController") as! TodoTableViewController
+            let event = fetchedResultsController.object(at: eventIndexPath2) 
             
             controller.eventIndexPath2 = eventIndexPath2
             controller.events = event
             
             let navController = UINavigationController(rootViewController: controller)
-            navController.modalPresentationStyle = UIModalPresentationStyle.FormSheet
-            self.presentViewController(navController, animated: true, completion: nil)
+            navController.modalPresentationStyle = UIModalPresentationStyle.formSheet
+            self.present(navController, animated: true, completion: nil)
             
         } else if eventMenu == "Budget Sheet" {
-            let controller = self.storyboard?.instantiateViewControllerWithIdentifier("BudgetTableViewController") as! BudgetTableViewController
+            let controller = self.storyboard?.instantiateViewController(withIdentifier: "BudgetTableViewController") as! BudgetTableViewController
             
-            let event = fetchedResultsController.objectAtIndexPath(eventIndexPath2) as! Events
+            let event = fetchedResultsController.object(at: eventIndexPath2) 
             
             controller.eventIndexPath2 = eventIndexPath2
             controller.events = event
             
             let navController = UINavigationController(rootViewController: controller)
-            navController.modalPresentationStyle = UIModalPresentationStyle.FormSheet
-            self.presentViewController(navController, animated: true, completion: nil)
+            navController.modalPresentationStyle = UIModalPresentationStyle.formSheet
+            self.present(navController, animated: true, completion: nil)
             
         } else if eventMenu == "Magic Wand Info" {
             
@@ -136,7 +134,7 @@ class BeGoodPopoverViewController: UITableViewController, UIPopoverPresentationC
     
     
     //-popover settings, adaptive for horizontal compact trait
-    func adaptivePresentationStyleForPresentationController(PC: UIPresentationController) -> UIModalPresentationStyle{
+    func adaptivePresentationStyle(for PC: UIPresentationController) -> UIModalPresentationStyle{
         
         //-this method is only called by System when the screen has compact width
         
@@ -145,18 +143,18 @@ class BeGoodPopoverViewController: UITableViewController, UIPopoverPresentationC
         
         switch(popoverOniPhone, popoverOniPhoneLandscape){
         case (true, _): //-always popover on iPhone
-            return .None
+            return .none
             
         case (_, true): //-popover only on landscape on iPhone
             let size = PC.presentingViewController.view.frame.size
             if(size.width>320.0){ //landscape
-                return .None
+                return .none
             }else{
-                return .FullScreen
+                return .fullScreen
             }
             
         default: //-no popover on iPhone
-            return .FullScreen
+            return .fullScreen
         }
     }
     
@@ -169,27 +167,32 @@ class BeGoodPopoverViewController: UITableViewController, UIPopoverPresentationC
     
     //-Info Alert Message function
     func InfoAlertMessage(){
-        dispatch_async(dispatch_get_main_queue()) {
-            let actionSheetController = UIAlertController(title: "\(self.infoTitle)", message: "\(self.infoMessage)", preferredStyle: .Alert)
+        DispatchQueue.main.async {
+            let actionSheetController = UIAlertController(title: "\(self.infoTitle!)", message: "\(self.infoMessage!)", preferredStyle: .alert)
             
             //-Update alert colors and attributes
-            actionSheetController.view.tintColor = UIColor.blueColor()
+            actionSheetController.view.tintColor = UIColor.blue
             let subview = actionSheetController.view.subviews.first!
             let alertContentView = subview.subviews.first!
-            alertContentView.backgroundColor = UIColor(red:0.66,green:0.97,blue:0.59,alpha:1.0)
-            alertContentView.layer.cornerRadius = 5;
+            //alertContentView.backgroundColor = UIColor(red:0.66,green:0.97,blue:0.59,alpha:1.0)
+            //alertContentView.backgroundColor = UIColor(colorLiteralRed: 0.66, green: 0.97, blue: 0.59, alpha: 1.0)
+            //alertContentView.backgroundColor = UIColor.green
+            
+            alertContentView.layer.cornerRadius = 12
+            
+            
             
             //-Create and add the OK action
-            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Default) { action -> Void in
+            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .default) { action -> Void in
 
-            self.dismissViewControllerAnimated(true, completion: {})
+            self.dismiss(animated: true, completion: {})
                 
             }
             actionSheetController.addAction(okAction)
             
             
             //-Present the AlertController
-            self.presentViewController(actionSheetController, animated: true, completion: nil)
+            self.present(actionSheetController, animated: true, completion: nil)
         }
     }
 

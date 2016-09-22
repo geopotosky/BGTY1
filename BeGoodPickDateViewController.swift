@@ -16,8 +16,8 @@ class BeGoodPickDateViewController: UIViewController {
     @IBOutlet weak var eventDateLabel: UILabel!
     
     //-Global objects, properties & variables
-    var timeAtPress = NSDate()
-    var currentEventDate: NSDate!
+    var timeAtPress = Date()
+    var currentEventDate: Date!
     var eventText: String!
     
     //-Flag passed to determine editing function (add or edit). This flag allows reuse of the AddEvent view
@@ -34,30 +34,28 @@ class BeGoodPickDateViewController: UIViewController {
         //-Otherwise set the current date
         if editEventFlag2 == true {
             
-            let dateFormatter = NSDateFormatter()
+            let dateFormatter = DateFormatter()
             
             //-Set the selected event date
             myDatePicker.date = currentEventDate
-            myDatePicker.minimumDate = NSDate()
+            myDatePicker.minimumDate = Date()
 
-            let timeZone = NSTimeZone(name: "Local")
+            let timeZone = TimeZone(identifier: "Local")
             dateFormatter.timeZone = timeZone
-            dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle //Set time style
-            dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle //Set date style
-            dateFormatter.timeZone = NSTimeZone()
-            let strDate = dateFormatter.stringFromDate(myDatePicker.date)
+            dateFormatter.timeStyle = DateFormatter.Style.short //Set time style
+            dateFormatter.dateStyle = DateFormatter.Style.medium //Set date style
+            let strDate = dateFormatter.string(from: myDatePicker.date)
             self.eventDateLabel.text = strDate
         }
         else {
-            let dateFormatter = NSDateFormatter()
+            let dateFormatter = DateFormatter()
             
-            let date = NSDate()
-            let timeZone = NSTimeZone(name: "Local")
+            let date = Date()
+            let timeZone = TimeZone(identifier: "Local")
             dateFormatter.timeZone = timeZone
-            dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle //Set time style
-            dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle //Set date style
-            dateFormatter.timeZone = NSTimeZone()
-            let localDate = dateFormatter.stringFromDate(date)
+            dateFormatter.timeStyle = DateFormatter.Style.short //Set time style
+            dateFormatter.dateStyle = DateFormatter.Style.medium //Set date style
+            let localDate = dateFormatter.string(from: date)
             self.eventDateLabel.text = localDate
         }
         
@@ -65,19 +63,18 @@ class BeGoodPickDateViewController: UIViewController {
     }
     
     //-Date Picker function
-    @IBAction func datePickerAction(sender: AnyObject) {
+    @IBAction func datePickerAction(_ sender: AnyObject) {
         
-        let dateFormatter = NSDateFormatter()
-        myDatePicker.minimumDate = NSDate()
+        let dateFormatter = DateFormatter()
+        myDatePicker.minimumDate = Date()
         
-        let timeZone = NSTimeZone(name: "Local")
+        let timeZone = TimeZone(identifier: "Local")
         dateFormatter.timeZone = timeZone
         //-To prevent displaying either date or time, set the desired style to NoStyle.
-        dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle //Set time style
-        dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle //Set date style
-        dateFormatter.timeZone = NSTimeZone()
+        dateFormatter.timeStyle = DateFormatter.Style.short //Set time style
+        dateFormatter.dateStyle = DateFormatter.Style.medium //Set date style
         
-        let strDate = dateFormatter.stringFromDate(myDatePicker.date)
+        let strDate = dateFormatter.string(from: myDatePicker.date)
         self.eventDateLabel.text = strDate
         self.currentEventDate = myDatePicker.date
         
@@ -86,19 +83,19 @@ class BeGoodPickDateViewController: UIViewController {
     
     //-Choose the popViewController level (1 or 2) based on whether the user is adding a new event or editing an
     //-existing event
-    @IBAction func pickEventDate(sender: UIButton) {
+    @IBAction func pickEventDate(_ sender: UIButton) {
         
         if editEventFlag2 == true {
             let controller = self.navigationController!.viewControllers[2] as! BeGoodAddEventViewController
             //-Forward selected event date to previous view
             controller.currentEventDate = myDatePicker.date
-            self.navigationController?.popViewControllerAnimated(true)
+            self.navigationController!.popViewController(animated: true)
             
         } else {
             let controller = self.navigationController!.viewControllers[1] as! BeGoodAddEventViewController
             //-Forward selected event date to previous view
             controller.currentEventDate = myDatePicker.date
-            self.navigationController?.popViewControllerAnimated(true)
+            self.navigationController!.popViewController(animated: true)
         }
     }
     

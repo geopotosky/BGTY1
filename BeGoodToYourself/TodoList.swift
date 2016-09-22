@@ -18,14 +18,14 @@ class TodoList : NSManagedObject {
     @NSManaged var todoListText: String?
     @NSManaged var events: Events?
     
-    override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
-        super.init(entity: entity, insertIntoManagedObjectContext: context)
+    override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertInto: context)
     }
     
     init(todoListText: String?, context: NSManagedObjectContext) {
         
-        let entity =  NSEntityDescription.entityForName("TodoList", inManagedObjectContext: context)!
-        super.init(entity: entity,insertIntoManagedObjectContext: context)
+        let entity =  NSEntityDescription.entity(forEntityName: "TodoList", in: context)!
+        super.init(entity: entity,insertInto: context)
         
         self.todoListText = todoListText
         

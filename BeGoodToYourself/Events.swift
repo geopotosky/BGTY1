@@ -14,21 +14,21 @@ import CoreData
 
 class Events : NSManagedObject {
     
-    @NSManaged var eventDate: NSDate?
+    @NSManaged var eventDate: Date?
     @NSManaged var textEvent: String?
-    @NSManaged var eventImage: NSData?
+    @NSManaged var eventImage: Data?
     @NSManaged var textCalendarID: String?
     @NSManaged var todoList: [TodoList]
     @NSManaged var budget: [Budget]
     
-    override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
-        super.init(entity: entity, insertIntoManagedObjectContext: context)
+    override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertInto: context)
     }
     
-    init(eventDate: NSDate?, textEvent: String?, eventImage: NSData?, textCalendarID: String?, context: NSManagedObjectContext) {
+    init(eventDate: Date?, textEvent: String?, eventImage: Data?, textCalendarID: String?, context: NSManagedObjectContext) {
         
-        let entity =  NSEntityDescription.entityForName("Events", inManagedObjectContext: context)!
-        super.init(entity: entity,insertIntoManagedObjectContext: context)
+        let entity =  NSEntityDescription.entity(forEntityName: "Events", in: context)!
+        super.init(entity: entity,insertInto: context)
         
         self.eventDate = eventDate
         self.textEvent = textEvent
@@ -38,6 +38,6 @@ class Events : NSManagedObject {
     }
     
     var isOverdue: Bool {
-        return (NSDate().compare(self.eventDate!) == NSComparisonResult.OrderedDescending) // deadline is earlier than current date
+        return (Date().compare(self.eventDate!) == ComparisonResult.orderedDescending) // deadline is earlier than current date
     }
 }

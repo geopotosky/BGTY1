@@ -17,7 +17,7 @@ class BudgetEditTableViewController: UITableViewController, UITextFieldDelegate,
     
     //-Global objects, properties & variables
     var events: Events!
-    var budgetIndexPath: NSIndexPath!
+    var budgetIndexPath: IndexPath!
     var dataString:String?
     var priceString:String?
     
@@ -38,7 +38,7 @@ class BudgetEditTableViewController: UITableViewController, UITextFieldDelegate,
         }
         fetchedResultsController.delegate = self
         
-        let budget = fetchedResultsController.objectAtIndexPath(budgetIndexPath) as! Budget
+        let budget = fetchedResultsController.object(at: budgetIndexPath) 
         textField.text = budget.itemBudgetText
         priceTextField.text = budget.priceBudgetText
 
@@ -52,39 +52,37 @@ class BudgetEditTableViewController: UITableViewController, UITextFieldDelegate,
     
     
     //-Fetch Budget data
-    lazy var fetchedResultsController: NSFetchedResultsController = {
+    lazy var fetchedResultsController: NSFetchedResultsController<Budget> = {
         
-        let fetchRequest = NSFetchRequest(entityName: "Budget")
-        
+        let fetchRequest = NSFetchRequest<Budget>(entityName: "Budget")
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "itemBudgetText", ascending: true)]
         fetchRequest.predicate = NSPredicate(format: "events == %@", self.events);
-        
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
-            managedObjectContext: self.sharedContext,
-            sectionNameKeyPath: nil,
-            cacheName: nil)
+        managedObjectContext: self.sharedContext,
+        sectionNameKeyPath: nil,
+        cacheName: nil)
         
         return fetchedResultsController
         
-        }()
+    }()
     
     
     //-Table view data source
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if indexPath.section == 0 && indexPath.row == 0 {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if (indexPath as NSIndexPath).section == 0 && (indexPath as NSIndexPath).row == 0 {
             textField.becomeFirstResponder()
         }
-        else if indexPath.section == 1 && indexPath.row == 0 {
+        else if (indexPath as NSIndexPath).section == 1 && (indexPath as NSIndexPath).row == 0 {
             priceTextField.becomeFirstResponder()
         }
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     
     //-Navigation
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "saveDataEdit" {
             dataString = textField.text
             priceString = priceTextField.text

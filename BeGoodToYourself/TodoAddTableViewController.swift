@@ -30,18 +30,18 @@ class TodoAddTableViewController: UITableViewController {
     
     //-Table view data source
     
-    override func tableView(tableView: UITableView,
-        didSelectRowAtIndexPath indexPath: NSIndexPath) {
-            if indexPath.section == 0 && indexPath.row == 0 {
+    override func tableView(_ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath) {
+            if (indexPath as NSIndexPath).section == 0 && (indexPath as NSIndexPath).row == 0 {
                 editModelTextField.becomeFirstResponder()
             }
-            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            tableView.deselectRow(at: indexPath, animated: true)
     }
     
     
     //-Navigation
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "saveDataAdd" {
             editedModel = editModelTextField.text
         }

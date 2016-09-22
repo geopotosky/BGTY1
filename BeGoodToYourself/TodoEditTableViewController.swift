@@ -17,7 +17,7 @@ class TodoEditTableViewController: UITableViewController, NSFetchedResultsContro
     
     //-Global objects, properties & variables
     var events: Events!
-    var todosIndexPath: NSIndexPath!
+    var todosIndexPath: IndexPath!
     var editedModel:String?
     
     
@@ -32,7 +32,7 @@ class TodoEditTableViewController: UITableViewController, NSFetchedResultsContro
         }
         fetchedResultsController.delegate = self
         
-        let todos = fetchedResultsController.objectAtIndexPath(todosIndexPath) as! TodoList
+        let todos = fetchedResultsController.object(at: todosIndexPath) 
         editModelTextField.text = todos.todoListText
         
     }
@@ -45,13 +45,11 @@ class TodoEditTableViewController: UITableViewController, NSFetchedResultsContro
     
     
     //-Fetch To Do List data
-    lazy var fetchedResultsController: NSFetchedResultsController = {
+    lazy var fetchedResultsController: NSFetchedResultsController<TodoList> = {
         
-        let fetchRequest = NSFetchRequest(entityName: "TodoList")
-        
+        let fetchRequest = NSFetchRequest<TodoList>(entityName: "TodoList")
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "todoListText", ascending: true)]
         fetchRequest.predicate = NSPredicate(format: "events == %@", self.events);
-        
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
             managedObjectContext: self.sharedContext,
             sectionNameKeyPath: nil,
@@ -59,22 +57,22 @@ class TodoEditTableViewController: UITableViewController, NSFetchedResultsContro
         
         return fetchedResultsController
         
-        }()
+    }()
     
     
     //-Table view data source
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if indexPath.section == 0 && indexPath.row == 0 {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if (indexPath as NSIndexPath).section == 0 && (indexPath as NSIndexPath).row == 0 {
             editModelTextField.becomeFirstResponder()
         }
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
 
     //-Navigation
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "saveDataEdit" {
             editedModel = editModelTextField.text
         }

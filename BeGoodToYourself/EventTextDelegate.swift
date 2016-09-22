@@ -13,15 +13,15 @@ import UIKit
 class EventTextDelegate: NSObject, UITextFieldDelegate {
     
     //-Ask the delegate if the textfield should change
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
-        var newText: NSString = textField.text!
-        newText = newText.stringByReplacingCharactersInRange(range, withString: string)
+        var newText: NSString = textField.text! as NSString
+        newText = newText.replacingCharacters(in: range, with: string) as NSString
         return true;
     }
     
     //-Let the delegate know that editing has begun
-    func textFieldDidBeginEditing(textField: UITextField) {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
         
         //-Check to see if the initial value of the textfield is TOP. If it is, clear it.
         if textField.text == "Enter Event Description" {
@@ -31,7 +31,7 @@ class EventTextDelegate: NSObject, UITextFieldDelegate {
     }
     
     //-Ask the delegate if the RETURN key should be processed
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
             textField.resignFirstResponder()
     
         return true;

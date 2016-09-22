@@ -11,7 +11,7 @@ import UIKit
 
 class PriceTextDelegate: NSObject, UITextFieldDelegate {
     
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
         let newString = textField.text! + string
         
@@ -54,7 +54,7 @@ class PriceTextDelegate: NSObject, UITextFieldDelegate {
 
     
     //-Ask the delegate if the RETURN key should be processed
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         
         return true;

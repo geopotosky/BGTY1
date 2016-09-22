@@ -18,14 +18,14 @@ class Budget : NSManagedObject {
     @NSManaged var priceBudgetText: String?
     @NSManaged var events: Events?
     
-    override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
-        super.init(entity: entity, insertIntoManagedObjectContext: context)
+    override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertInto: context)
     }
     
     init(itemBudgetText: String?, priceBudgetText: String?, context: NSManagedObjectContext) {
         
-        let entity =  NSEntityDescription.entityForName("Budget", inManagedObjectContext: context)!
-        super.init(entity: entity,insertIntoManagedObjectContext: context)
+        let entity =  NSEntityDescription.entity(forEntityName: "Budget", in: context)!
+        super.init(entity: entity,insertInto: context)
         
         self.itemBudgetText = itemBudgetText
         self.priceBudgetText = priceBudgetText
